@@ -65,7 +65,7 @@
         }
 
         async function handleGetRequest(endpoint) {
-            const response = await fetch(`https://ayoba-gatewayapi-8cedb3f16315.herokuapp.com/api${endpoint}`);
+            const response = await fetch(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}`);
             const result = await response.json();
             document.getElementById('result').innerText = JSON.stringify(result, null, 2);
         }
@@ -74,7 +74,7 @@
             event.preventDefault();
             const formData = new FormData(event.target);
             const data = Object.fromEntries(formData.entries());
-            makeRequest(`https://ayoba-gatewayapi-8cedb3f16315.herokuapp.com/api${endpoint}`, 'POST', data);
+            makeRequest(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}`, 'POST', data);
         }
     </script>
 </head>
