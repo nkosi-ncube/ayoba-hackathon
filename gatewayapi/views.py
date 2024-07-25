@@ -11,6 +11,7 @@ from django.shortcuts import render
 def home(request):
     return render(request, 'home.html')
 # Function-based views
+@csrf_exempt
 @api_view(['GET'])
 def catalog_list(request):
     products = Product.objects.all()
@@ -18,6 +19,7 @@ def catalog_list(request):
     return Response(serializer.data)
 
 
+@csrf_exempt
 @api_view(['POST'])
 def add_to_cart(request):
     customer_id = request.data.get('customer_id')
