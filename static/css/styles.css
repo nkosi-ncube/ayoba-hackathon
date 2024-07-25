@@ -131,7 +131,7 @@ body {
     background-color: #5a6268;
 }
 .settings-panel {
-    display: none;
+    display: none; /* Hide by default */
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -140,10 +140,19 @@ body {
     right: 20px;
     top: 60px;
     z-index: 1000;
+    transition: opacity 0.3s ease-in-out; /* Smooth transition */
 }
-.settings-panel h2 {
-    margin-top: 0;
+
+.settings-panel.active {
+    display: block; /* Show when 'active' class is added */
+    opacity: 1; /* Ensure it is fully opaque when visible */
 }
+
+.settings-panel.hidden {
+    opacity: 0; /* Smoothly fade out */
+    display: block; /* Still occupy space */
+}
+
 .section {
     display: none;
 }

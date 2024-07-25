@@ -25,12 +25,12 @@ async function makeRequest(url, method, data) {
 
 async function fetchCustomers() {
     try {
-        const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/customers');
+        const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/customers/');
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const customers = await response.json();
-        return customers.map(customer => customer.phoneNumber); // Adjust field as necessary
+        return customers; // Return the full customer data
     } catch (error) {
         document.getElementById('broadcast-result').innerText = `Error: ${error.message}`;
         return [];
@@ -136,10 +136,26 @@ async function sendMessage(event) {
     }, 1000);
 }
 
-function toggleSettings() {
+async function toggleSettings() {
     const settingsPanel = document.querySelector('#settings-panel');
     settingsPanel.classList.toggle('active');
+
+    if (settingsPanel.classList.contains('active')) {
+        const customers = await fetchCustomers();
+        const customerList = document.createElement('ul');
+
+        customers.forEach(customer => {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `<strong>${customer.name}</strong> - Language: ${customer.language}`;
+            customerList.appendChild(listItem);
+        });
+
+        // Clear existing content and add the new customer list
+        settingsPanel.innerHTML = '<h2>Settings</h2><button onclick="toggleSettings()">Close</button>';
+        settingsPanel.appendChild(customerList);
+    }
 }
+
 
 async function fetchBusinessProfile() {
     try {
