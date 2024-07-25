@@ -329,7 +329,7 @@
             <h2>Products</h2>
             <button onclick="handleGetRequest('products')">Get Products</button>
             <div id="result"></div>
-            <form id="products-form" onsubmit="handleFormSubmit(event, 'products')">
+            <form id="products-form" onsubmit="handleFormSubmit(event, 'products/')">
                 <div class="form-group">
                     <label for="product-name">Product Name</label>
                     <input type="text" class="form-control" id="product-name" name="name" required>
@@ -345,7 +345,7 @@
             <h2>Orders</h2>
             <button onclick="handleGetRequest('orders')">Get Orders</button>
             <div id="result"></div>
-            <form id="orders-form" onsubmit="handleFormSubmit(event, 'orders')">
+            <form id="orders-form" onsubmit="handleFormSubmit(event, 'orders/')">
                 <div class="form-group">
                     <label for="order-customer-id">Customer ID</label>
                     <input type="number" class="form-control" id="order-customer-id" name="customerId" required>
@@ -361,7 +361,7 @@
             <h2>Invoices</h2>
             <button onclick="handleGetRequest('invoices')">Get Invoices</button>
             <div id="result"></div>
-            <form id="invoices-form" onsubmit="handleFormSubmit(event, 'invoices')">
+            <form id="invoices-form" onsubmit="handleFormSubmit(event, 'invoices/')">
                 <div class="form-group">
                     <label for="invoice-order-id">Order ID</label>
                     <input type="number" class="form-control" id="invoice-order-id" name="orderId" required>
@@ -377,7 +377,7 @@
             <h2>Payments</h2>
             <button onclick="handleGetRequest('payments')">Get Payments</button>
             <div id="result"></div>
-            <form id="payments-form" onsubmit="handleFormSubmit(event, 'payments')">
+            <form id="payments-form" onsubmit="handleFormSubmit(event, 'payments/')">
                 <div class="form-group">
                     <label for="payment-invoice-id">Invoice ID</label>
                     <input type="number" class="form-control" id="payment-invoice-id" name="invoiceId" required>
