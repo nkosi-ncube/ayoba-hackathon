@@ -5,6 +5,7 @@ from vertexai.generative_models import GenerativeModel  # Replace with the actua
 
 def generate_normal_response(user_prompt):
     logging.basicConfig(level=logging.DEBUG)
+    root_project_folder = os.path.dirname(__file__)
     
     # Path to your Google Cloud credentials file
     key_file_path = "application_default_credentials.json"
