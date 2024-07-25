@@ -1,6 +1,6 @@
 import logging
 import os
-from vertexai.generative_models import GenerativeModel, Part  # Replace with the actual import path
+from vertexai.generative_models import GenerativeModel  # Replace with the actual import path
 
 def generate_normal_response(user_prompt):
     logging.basicConfig(level=logging.DEBUG)
