@@ -200,6 +200,55 @@
             document.getElementById('result').innerText = JSON.stringify(result, null, 2);
         }
 
+        async function fetchCustomers() {
+    try {
+        const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/customers');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const customers = await response.json();
+        return customers.map(customer => customer.phoneNumber); // Adjust field as necessary
+    } catch (error) {
+        document.getElementById('broadcast-result').innerText = `Error: ${error.message}`;
+        return [];
+    }
+}
+async function broadcastMessage() {
+    const message = document.getElementById('message').value;
+    if (!message) {
+        document.getElementById('broadcast-result').innerText = 'Message cannot be empty!';
+        return;
+    }
+
+    try {
+        const customers = await fetchCustomers();
+        if (customers.length === 0) {
+            document.getElementById('broadcast-result').innerText = 'No customers found!';
+            return;
+        }
+
+        const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                phoneNumbers: customers,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        document.getElementById('broadcast-result').innerText = 'Message sent successfully!';
+    } catch (error) {
+        document.getElementById('broadcast-result').innerText = `Error: ${error.message}`;
+    }
+}
+
+
         async function handleGetRequest(endpoint) {
     try {
         const response = await fetch(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}`);
@@ -464,6 +513,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <a class="nav-link" href="#" onclick="showSection('ai-query-section')">
                 <i class="fas fa-robot"></i><span>AI Query</span>
             </a>
+
+            <a class="nav-link" href="#" onclick="showSection('broadcast-section')">
+                <i class="fas fa-broadcast-tower"></i> Broadcast to Customers
+            </a>
+            
         </div>
     </div>
 
@@ -494,6 +548,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </form>
         </div>
+        <!-- Broadcast Section -->
+<div id="broadcast-section" style="display: none;">
+    <h2>Broadcast Message</h2>
+    <form id="broadcast-form">
+        <div class="form-group">
+            <label for="message">Message:</label>
+            <textarea id="message" class="form-control" rows="4" required></textarea>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="broadcastMessage()">Send Message</button>
+    </form>
+    <div id="broadcast-result"></div>
+</div>
+
         <div id="products-section" class="section">
             <h2>Products</h2>
             <!-- <button onclick="handleGetRequest('products')">Get Products</button>
