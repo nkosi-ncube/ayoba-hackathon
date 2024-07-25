@@ -3,77 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Frontend</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Ayoba Business Chat</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
             color: #333;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
-        h1 {
-            color: #0056b3;
-        }
-        .form-container {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        .form-container label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-        .form-container input, .form-container textarea, .form-container button {
-            width: calc(100% - 20px);
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        .form-container button {
+        .navbar {
             background-color: #0056b3;
-            color: white;
-            border: none;
-            cursor: pointer;
+            padding: 10px 15px;
         }
-        .form-container button:hover {
-            background-color: #004494;
+        .navbar-brand {
+            color: #fff !important;
+            font-size: 24px;
         }
-        .result {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            white-space: pre-wrap;
-            overflow-x: auto;
+        .navbar-brand img {
+            max-height: 40px;
+            margin-right: 15px;
         }
-        .popup-form, .popup-overlay {
-            display: none;
+        .navbar-nav .nav-link {
+            color: #fff !important;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #e0e0e0 !important;
+        }
+        .sidebar {
+            background-color: #0056b3;
+            color: #fff;
+            height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
+            width: 250px;
+            padding-top: 20px;
+            padding-left: 20px;
+            padding-right: 10px;
         }
-        .popup-form.active, .popup-overlay.active {
-            display: flex;
+        .sidebar .nav-link {
+            color: #fff;
         }
-        .popup-content {
-            background: #fff;
+        .sidebar .nav-link:hover {
+            color: #e0e0e0;
+        }
+        .content {
+            margin-left: 250px;
             padding: 20px;
-            border-radius: 8px;
-            width: 600px;
         }
-        .popup-content button {
-            margin-top: 10px;
+        .chat-box {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            padding: 15px;
+            height: 500px;
+            overflow-y: scroll;
+        }
+        .chat-message {
+            background: #e9f7fc;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        .chat-message.bot {
+            background: #e9f7fc;
+        }
+        .chat-message.user {
+            background: #d1ecf1;
+            text-align: right;
+        }
+        .form-control {
+            border-radius: 0;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .modal-header {
+            background-color: #0056b3;
+            color: #fff;
+        }
+        .modal-footer {
+            border-top: 1px solid #ddd;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .btn-primary {
+            background-color: #0056b3;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #004494;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .settings-panel {
+            display: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            position: absolute;
+            right: 20px;
+            top: 60px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .settings-panel.active {
+            display: block;
+        }
+        .settings-panel h2 {
+            margin-top: 0;
+        }
+        .settings-panel button {
+            margin-right: 10px;
+        }
+        .profile-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .profile-section img {
+            border-radius: 50%;
+            height: 50px;
+            width: 50px;
+            margin-right: 10px;
+        }
+        .profile-section .profile-info {
+            color: #fff;
         }
     </style>
     <script>
@@ -95,100 +162,11 @@
             document.getElementById('result').innerText = JSON.stringify(result, null, 2);
         }
 
-        function showForm(endpoint) {
-            let formHTML = '';
-            switch (endpoint) {
-                case 'orders/':
-                    formHTML = `
-                        <form id="create-form" onsubmit="handleFormSubmit(event, '${endpoint}')">
-                            <label for="customer_id">Customer ID:</label>
-                            <input type="text" id="customer_id" name="customer_id" required><br>
-                            <label for="total">Total Amount:</label>
-                            <input type="number" id="total" name="total" step="0.01" required><br>
-                            <button type="submit">Submit</button>
-                        </form>
-                    `;
-                    break;
-                case 'orderitems/':
-                    formHTML = `
-                        <form id="create-form" onsubmit="handleFormSubmit(event, '${endpoint}')">
-                            <label for="order_id">Order ID:</label>
-                            <input type="text" id="order_id" name="order_id" required><br>
-                            <label for="product_id">Product ID:</label>
-                            <input type="text" id="product_id" name="product_id" required><br>
-                            <label for="quantity">Quantity:</label>
-                            <input type="number" id="quantity" name="quantity" required><br>
-                            <label for="price">Price:</label>
-                            <input type="number" id="price" name="price" step="0.01" required><br>
-                            <button type="submit">Submit</button>
-                        </form>
-                    `;
-                    break;
-                case 'products/':
-                    formHTML = `
-                        <form id="create-form" onsubmit="handleFormSubmit(event, '${endpoint}')">
-                            <label for="name">Product Name:</label>
-                            <input type="text" id="name" name="name" required><br>
-                            <label for="price">Price:</label>
-                            <input type="number" id="price" name="price" step="0.01" required><br>
-                            <button type="submit">Submit</button>
-                        </form>
-                    `;
-                    break;
-                case 'customers/':
-                    formHTML = `
-                        <form id="create-form" onsubmit="handleFormSubmit(event, '${endpoint}')">
-                            <label for="name">Customer Name:</label>
-                            <input type="text" id="name" name="name" required><br>
-                            <label for="language">Language:</label>
-                            <input type="text" id="language" name="language" required><br>
-                            <button type="submit">Submit</button>
-                        </form>
-                    `;
-                    break;
-                case 'businessprofiles/':
-                    formHTML = `
-                        <form id="create-form" onsubmit="handleFormSubmit(event, '${endpoint}')">
-                            <label for="user">User ID:</label>
-                            <input type="text" id="user" name="user" required><br>
-                            <label for="business_name">Business Name:</label>
-                            <input type="text" id="business_name" name="business_name" required><br>
-                            <label for="contact_email">Contact Email:</label>
-                            <input type="email" id="contact_email" name="contact_email" required><br>
-                            <label for="contact_phone">Contact Phone:</label>
-                            <input type="text" id="contact_phone" name="contact_phone" required><br>
-                            <label for="address">Address:</label>
-                            <input type="text" id="address" name="address" required><br>
-                            <label for="working_hours">Working Hours:</label>
-                            <input type="text" id="working_hours" name="working_hours" required><br>
-                            <label for="description">Description:</label>
-                            <textarea id="description" name="description" required></textarea><br>
-                            <button type="submit">Submit</button>
-                        </form>
-                    `;
-                    break;
-            }
-            document.getElementById('popup-form').innerHTML = `
-                <div class="popup-content">
-                    ${formHTML}
-                    <button onclick="toggleForm()">Close</button>
-                </div>
-            `;
-            document.getElementById('popup-form').classList.add('active');
-            document.getElementById('popup-overlay').classList.add('active');
-        }
-
-        function toggleForm() {
-            document.getElementById('popup-form').classList.remove('active');
-            document.getElementById('popup-overlay').classList.remove('active');
-        }
-
-        async function handleFormSubmit(event, endpoint) {
+        function handleFormSubmit(event, endpoint) {
             event.preventDefault();
             const formData = new FormData(event.target);
             const data = Object.fromEntries(formData.entries());
-            await makeRequest(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}`, 'POST', data);
-            toggleForm();
+            makeRequest(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}`, 'POST', data);
         }
 
         async function sendQueryToAI() {
@@ -207,65 +185,199 @@
                 document.getElementById('ai-response').innerText = `Error: ${error.message}`;
             }
         }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = section.id === sectionId ? 'block' : 'none';
+            });
+        }
+
+        function sendMessage(event) {
+            event.preventDefault();
+            const message = document.querySelector('#chat-message').value;
+            const chatBox = document.querySelector('#chat-box');
+            chatBox.innerHTML += `<div class="chat-message user">${message}</div>`;
+            document.querySelector('#chat-message').value = '';
+            // Simulate bot response
+            setTimeout(() => {
+                chatBox.innerHTML += `<div class="chat-message bot">This is a response from the bot.</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1000);
+        }
+
+        function toggleSettings() {
+            const settingsPanel = document.querySelector('#settings-panel');
+            settingsPanel.classList.toggle('active');
+        }
     </script>
 </head>
 <body>
-    <h1>API Frontend</h1>
-    
-    <!-- Display API response -->
-    <h2>API Response</h2>
-    <div id="result" class="result">Results will appear here</div>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="#">
+            <img src="https://via.placeholder.com/40" alt="Ayoba Logo"> Ayoba Business
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="toggleSettings()">Settings</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-    <!-- Fetch Orders -->
-    <h2>Get Orders</h2>
-    <button onclick="handleGetRequest('orders/')">Fetch Orders</button>
+    <div class="sidebar">
+        <div class="profile-section">
+            <img src="https://via.placeholder.com/50" alt="Profile Picture">
+            <div class="profile-info">
+                <h5>User Name</h5>
+                <p>Business Owner</p>
+            </div>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('fetch-orders')">Fetch Orders</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('create-order')">Create Order</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('chat')">Chat to Business</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('create-business-profile')">Create Business Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('update-business-profile')">Update Business Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('manage-contacts')">Manage Contacts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('manage-invoices')">Manage Invoices</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('manage-payments')">Manage Payments</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showSection('get-query')">Get Query</a>
+            </li>
+        </ul>
+    </div>
 
-    <!-- Fetch Order Items -->
-    <h2>Get Order Items</h2>
-    <button onclick="handleGetRequest('orderitems/')">Fetch Order Items</button>
+    <div class="content">
+        <div id="fetch-orders" class="section">
+            <h2>Fetch Orders</h2>
+            <button class="btn btn-primary" onclick="handleGetRequest('orders')">Fetch Orders</button>
+            <pre id="result"></pre>
+        </div>
 
-    <!-- Fetch Products -->
-    <h2>Get Products</h2>
-    <button onclick="handleGetRequest('products/')">Fetch Products</button>
+        <div id="create-order" class="section">
+            <h2>Create Order</h2>
+            <form onsubmit="handleFormSubmit(event, 'orders')">
+                <div class="form-group">
+                    <label for="productIds">Product IDs</label>
+                    <input type="text" class="form-control" id="productIds" name="productIds" placeholder="Enter Product IDs" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerId">Customer ID</label>
+                    <input type="text" class="form-control" id="customerId" name="customerId" placeholder="Enter Customer ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="total">Total</label>
+                    <input type="number" class="form-control" id="total" name="total" placeholder="Enter Total" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Order</button>
+            </form>
+        </div>
 
-    <!-- Fetch Customers -->
-    <h2>Get Customers</h2>
-    <button onclick="handleGetRequest('customers/')">Fetch Customers</button>
+        <div id="chat" class="section">
+            <h2>Chat to Business</h2>
+            <div class="chat-box" id="chat-box">
+                <div class="chat-message bot">Hello! How can I assist you today?</div>
+            </div>
+            <form onsubmit="sendMessage(event)">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="chat-message" placeholder="Type your message..." required>
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </div>
 
-    <!-- Create Order -->
-    <h2>Create Order</h2>
-    <button onclick="showForm('orders/')">Open Form</button>
+        <div id="create-business-profile" class="section">
+            <h2>Create Business Profile</h2>
+            <form onsubmit="handleFormSubmit(event, 'profiles')">
+                <div class="form-group">
+                    <label for="profileName">Profile Name</label>
+                    <input type="text" class="form-control" id="profileName" name="name" placeholder="Enter Profile Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="profileDetails">Profile Details</label>
+                    <textarea class="form-control" id="profileDetails" name="details" rows="3" placeholder="Enter Profile Details" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Profile</button>
+            </form>
+        </div>
 
-    <!-- Create Order Item -->
-    <h2>Create Order Item</h2>
-    <button onclick="showForm('orderitems/')">Open Form</button>
+        <div id="update-business-profile" class="section">
+            <h2>Update Business Profile</h2>
+            <form onsubmit="handleFormSubmit(event, 'profiles/update')">
+                <div class="form-group">
+                    <label for="updateProfileId">Profile ID</label>
+                    <input type="text" class="form-control" id="updateProfileId" name="id" placeholder="Enter Profile ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="updateProfileName">Profile Name</label>
+                    <input type="text" class="form-control" id="updateProfileName" name="name" placeholder="Enter Profile Name">
+                </div>
+                <div class="form-group">
+                    <label for="updateProfileDetails">Profile Details</label>
+                    <textarea class="form-control" id="updateProfileDetails" name="details" rows="3" placeholder="Enter Profile Details"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </form>
+        </div>
 
-    <!-- Create Product -->
-    <h2>Create Product</h2>
-    <button onclick="showForm('products/')">Open Form</button>
+        <div id="manage-contacts" class="section">
+            <h2>Manage Contacts</h2>
+            <button class="btn btn-primary" onclick="handleGetRequest('contacts')">Fetch Contacts</button>
+            <pre id="result"></pre>
+        </div>
 
-    <!-- Create Customer -->
-    <h2>Create Customer</h2>
-    <button onclick="showForm('customers/')">Open Form</button>
+        <div id="manage-invoices" class="section">
+            <h2>Manage Invoices</h2>
+            <button class="btn btn-primary" onclick="handleGetRequest('invoices')">Fetch Invoices</button>
+            <pre id="result"></pre>
+        </div>
 
-    <!-- Create Business Profile -->
-    <h2>Create Business Profile</h2>
-    <button onclick="showForm('businessprofiles/')">Open Form</button>
+        <div id="manage-payments" class="section">
+            <h2>Manage Payments</h2>
+            <button class="btn btn-primary" onclick="handleGetRequest('payments')">Fetch Payments</button>
+            <pre id="result"></pre>
+        </div>
 
-    <!-- Send Query to AI -->
-    <h2>AI Query</h2>
-    <form onsubmit="event.preventDefault(); sendQueryToAI();">
-        <label for="query">Your Query:</label>
-        <input type="text" id="query" name="query" required><br>
-        <button type="submit">Send Query</button>
-    </form>
+        <div id="get-query" class="section">
+            <h2>Get Query</h2>
+            <div class="form-group">
+                <label for="query">Enter your query:</label>
+                <input type="text" class="form-control" id="query" placeholder="Type your query here">
+            </div>
+            <button class="btn btn-primary" onclick="sendQueryToAI()">Send Query</button>
+            <pre id="ai-response"></pre>
+        </div>
+    </div>
 
-    <!-- Display AI Response -->
-    <h2>AI Response</h2>
-    <div id="ai-response" class="result">AI response will appear here</div>
+    <div id="settings-panel" class="settings-panel">
+        <h2>Settings</h2>
+        <button class="btn btn-secondary" onclick="toggleSettings()">Close</button>
+        <!-- Add settings options here -->
+    </div>
 
-    <!-- Popup Form and Overlay -->
-    <div id="popup-overlay" class="popup-overlay" onclick="toggleForm()"></div>
-    <div id="popup-form" class="popup-form"></div>
+    <!-- Bootstrap and jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
