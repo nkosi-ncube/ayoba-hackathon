@@ -207,11 +207,12 @@
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const result = await response.json();
-        console.log("Response",response)
-        console.log("Result" ,result)
-        document.getElementById('result').innerText = JSON.stringify(result, null, 2);
+        console.log("Response", response);
+        console.log("Result", result);
+        return result; // Return the result for further processing
     } catch (error) {
         document.getElementById('result').innerText = `Error: ${error.message}`;
+        return []; // Return an empty array in case of an error
     }
 }
 
@@ -326,6 +327,9 @@ async function fetchAndDisplayOrders() {
     const ordersSection = document.getElementById('orders-section');
     const ordersList = document.createElement('ul');
     ordersList.className = 'list-group';
+
+    // Clear any existing content
+    ordersSection.innerHTML = '';
 
     orders.forEach(order => {
         const listItem = document.createElement('li');
