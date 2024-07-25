@@ -300,18 +300,36 @@
                 document.getElementById('profile-logo').src = 'default-logo.png';
             }
         }
-        document.addEventListener('DOMContentLoaded', () => {
+        
+
+        async function fetchAndDisplayCustomers() {
+    const customers = await fetchData('customers');
+    const customersSection = document.getElementById('customers-section');
+    const customersList = document.createElement('ul');
+    customersList.className = 'list-group';
+
+    customers.forEach(customer => {
+        const listItem = document.createElement('li');
+        listItem.className = 'list-group-item';
+        listItem.innerHTML = `
+            <h5>${customer.name}</h5>
+            <p>Language: ${customer.language}</p>
+        `;
+        customersList.appendChild(listItem);
+    });
+
+    customersSection.appendChild(customersList);
+}
+document.addEventListener('DOMContentLoaded', () => {
             // Show default section
             showSection('chat-section');
             
             fetchBusinessProfile();
-            handleGetRequest('products');
-            handleGetRequest('customers');
-            handleGetRequest('orders');
-            handleGetRequest('invoice');
-            handleGetRequest('payments');
+
+            fetchAndDisplayCustomers();
 
         });
+
     </script>
 </head>
 <body>
