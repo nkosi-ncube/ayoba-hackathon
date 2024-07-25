@@ -131,7 +131,8 @@ async function sendMessage(event) {
     chatBox.innerHTML += `<div class="chat-message user">${message}</div>`;
     document.querySelector('#chat-message').value = '';
     // Simulate bot response
-    response_message = await handleGetRequest('api/messages');
+    // response_message = await handleGetRequest('api/messages');
+    response = "this is a palceholder response from the business"
     setTimeout(() => {
         chatBox.innerHTML += `<div class="chat-message bot">${response_message}</div>`;
         chatBox.scrollTop = chatBox.scrollHeight;
