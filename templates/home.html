@@ -207,6 +207,8 @@
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const result = await response.json();
+        console.log("Response",response)
+        console.log("Result" ,result)
         document.getElementById('result').innerText = JSON.stringify(result, null, 2);
     } catch (error) {
         document.getElementById('result').innerText = `Error: ${error.message}`;
