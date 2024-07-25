@@ -25,11 +25,13 @@ async function makeRequest(url, method, data) {
 
 async function fetchCustomers() {
     try {
+        console.log("Fetching Customers .......")
         const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/customers/');
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const customers = await response.json();
+        console.log("Customers: " , customers)
         return customers; // Return the full customer data
     } catch (error) {
         document.getElementById('broadcast-result').innerText = `Error: ${error.message}`;
