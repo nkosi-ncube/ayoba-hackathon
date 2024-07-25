@@ -6,8 +6,7 @@ from .views import (
     catalog_list, add_to_cart, checkout, home, MessageViewSet
 )
 
-from django.conf import settings
-from django.conf.urls.static import static
+
 
 # Create a router and register viewsets with it
 router = DefaultRouter()
@@ -28,7 +27,4 @@ urlpatterns = [
     path('cart/', add_to_cart, name='add-to-cart'),  # Function-based view for adding items to the cart
     path('checkout/', checkout, name='checkout'),  # Function-based view for checkout
     path('api/', include(router.urls)),  # Use a prefix for API endpoints
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-# urls.py
-
-
+]

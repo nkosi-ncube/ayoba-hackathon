@@ -122,6 +122,9 @@ USE_TZ = True
 
 import os
 
+# Base directory of your project
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # Directory for static files collected during deployment
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -131,11 +134,16 @@ STATIC_URL = '/static/'
 # (Optional) Additional directories to search for static files
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
+
 # (Optional) To handle media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Use WhiteNoise for serving static files in production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-APPEND_SLASH=False 
+
+# Do not append a trailing slash to URLs
+APPEND_SLASH = False
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
