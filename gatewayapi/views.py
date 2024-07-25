@@ -4,7 +4,8 @@ from rest_framework.decorators import api_view
 from .models import Product, Customer, Order, Invoice, Payment, Query, Admin,OrderItem,BusinessProfile,Message
 from .serializers import ProductSerializer, CustomerSerializer, OrderSerializer, InvoiceSerializer, PaymentSerializer, QuerySerializer, AdminSerializer,OrderItemSerializer,BusinessProfileSerializer,MessageSerializer
 from django.views.decorators.csrf import csrf_exempt
-
+from .services import send_message, send_file_message, get_media_slots, get_avatar_slot
+from django.conf import settings
 from django.shortcuts import render
 
 def home(request):
@@ -61,7 +62,47 @@ def checkout(request):
         return Response({"error": "Order not found"}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
 
+    def create(self, request, *args, **kwargs):
+        # Assuming that the request data contains msisdns, message_type, and message_text
+        msisdns = request.data.get('msisdns', [])
+        message_type = request.data.get('message_type', 'text')
+        message_text = request.data.get('message_text', '')
+
+        if message_type == 'text':
+            response = send_message(msisdns, message_type, message_text)
+        elif message_type == 'file':
+            file_url = request.data.get('file_url', '')
+            response = send_file_message(msisdns, file_url)
+        else:
+            return Response({"error": "Unsupported message type"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(response, status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, *args, **kwargs):
+        # Fetching a message's details
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def list(self, request, *args, **kwargs):
+        # Retrieving messages sent from Ayoba users
+        url = f"{settings.AYOBA_API_URL}/v1/business/message"
+        headers = {
+            'Authorization': f'Bearer {settings.AYOBA_API_KEY}',
+        }
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            messages = response.json()
+            return Response(messages, status=status.HTTP_200_OK)
+        except requests.exceptions.HTTPError as http_err:
+            return Response({"error": f"HTTP error occurred: {http_err}"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as err:
+            return Response({"error": f"Other error occurred: {err}"}, status=status.HTTP_400_BAD_REQUEST)
 # Class-based views
 class BusinessProfileViewSet(viewsets.ModelViewSet):
     queryset = BusinessProfile.objects.all()
@@ -86,9 +127,9 @@ class OrderViewSet(viewsets.ModelViewSet):
 class InvoiceViewSet(viewsets.ModelViewSet):
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
-class MessageViewSet(viewsets.ModelViewSet):
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
+# class MessageViewSet(viewsets.ModelViewSet):
+#     queryset = Message.objects.all()
+#     serializer_class = MessageSerializer
 class PaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer

@@ -77,22 +77,25 @@
             makeRequest(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}`, 'POST', data);
         }
 
-        async function sendQueryToAI() {
-    const query = document.getElementById('query').value;
-    try {
-        const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/customer-assistance/queries/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ query: query })
-        });
-        const result = await response.json();
-        document.getElementById('ai-response').innerText = JSON.stringify(result, null, 2);
-    } catch (error) {
-        document.getElementById('ai-response').innerText = `Error: ${error.message}`;
-    }
-}
+        async function sendMessage() {
+            const msisdns = document.getElementById('msisdns').value.split(',').map(num => num.trim());
+            const messageType = document.getElementById('message_type').value;
+            const messageText = document.getElementById('message_text').value;
+
+            try {
+                const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/messages/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ msisdns: msisdns, message_type: messageType, message_text: messageText })
+                });
+                const result = await response.json();
+                document.getElementById('message-response').innerText = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('message-response').innerText = `Error: ${error.message}`;
+            }
+        }
 
     </script>
 </head>
@@ -182,6 +185,22 @@
         <textarea id="description" name="description" required></textarea><br>
         <button type="submit">Create Business Profile</button>
     </form>
+
+    <!-- Send Message -->
+    <h2>Send Message</h2>
+    <form onsubmit="event.preventDefault(); sendMessage();">
+        <label for="msisdns">MSISDNs (comma separated):</label>
+        <input type="text" id="msisdns" name="msisdns" required><br>
+        <label for="message_type">Message Type:</label>
+        <input type="text" id="message_type" name="message_type" required><br>
+        <label for="message_text">Message Text:</label>
+        <textarea id="message_text" name="message_text" required></textarea><br>
+        <button type="submit">Send Message</button>
+    </form>
+
+    <!-- Display Message Response -->
+    <h2>Message Response</h2>
+    <div id="message-response" class="result">Message response will appear here</div>
 
     <!-- Send Query to AI -->
     <h2>AI Query</h2>
