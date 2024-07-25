@@ -2,6 +2,7 @@ import logging
 import os
 import vertexai
 from vertexai.generative_models import GenerativeModel  # Replace with the actual import path
+from gatewayapi.models import Customer
 
 def generate_normal_response(user_prompt):
     logging.basicConfig(level=logging.DEBUG)

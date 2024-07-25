@@ -3,6 +3,17 @@ from django.db import models
 # Create your models here.
 from django.contrib.auth.models import User
 
+
+class Message(models.Model):
+    msisdn = models.CharField(max_length=20)  # Phone number of the sender
+    message_id = models.CharField(max_length=100)  # Unique ID for the message
+    message_type = models.CharField(max_length=50)  # Type of the message (e.g., text, image)
+    text = models.TextField(blank=True, null=True)  # Text of the message
+    media_url = models.URLField(blank=True, null=True)  # URL for media if applicable
+    timestamp = models.DateTimeField(auto_now_add=True)  # When the message was sent
+
+    def __str__(self):
+        return f"Message from {self.msisdn} at {self.timestamp}"
 class BusinessProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='business_profile')
     business_name = models.CharField(max_length=255)

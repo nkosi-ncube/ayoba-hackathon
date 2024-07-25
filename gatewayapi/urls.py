@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     ProductViewSet, CustomerViewSet, OrderViewSet, InvoiceViewSet, PaymentViewSet, 
     QueryViewSet, AdminViewSet, OrderItemViewSet, BusinessProfileViewSet, 
-    catalog_list, add_to_cart, checkout, home
+    catalog_list, add_to_cart, checkout, home, MessageViewSet
 )
 
 # Create a router and register viewsets with it
@@ -17,6 +17,7 @@ router.register(r'queries', QueryViewSet)
 router.register(r'admins', AdminViewSet)
 router.register(r'orderitems', OrderItemViewSet) 
 router.register(r'businessprofiles', BusinessProfileViewSet)
+router.register(r'messages', MessageViewSet)
 
 urlpatterns = [
     path('', home, name='home'),  # Home view should come first

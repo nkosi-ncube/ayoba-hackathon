@@ -1,6 +1,10 @@
 from rest_framework import serializers
-from .models import Product, Customer, Order, Invoice, Payment, Query, Admin,OrderItem,BusinessProfile
+from .models import Product, Customer, Order, Invoice, Payment, Query, Admin,OrderItem,BusinessProfile,Message
 
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = '__all__'
 
 class BusinessProfileSerializer(serializers.ModelSerializer):
     class Meta:
