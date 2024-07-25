@@ -8,7 +8,8 @@ def generate_normal_response(user_prompt):
     
     # Path to your Google Cloud credentials file
     key_file_path = "application_default_credentials.json"
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_file_path
+    key_path = os.path.join(root_project_folder, key_file_path)
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = key_path
     project_id = "strong-kit-422108-p4"
 
     logging.debug("Initializing Vertex AI")
