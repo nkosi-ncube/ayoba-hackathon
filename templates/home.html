@@ -185,24 +185,7 @@
             display: none;
         }
 
-        /* Spinner styles */
-        .spinner-border {
-            display: none;
-            width: 3rem;
-            height: 3rem;
-            border-width: 0.3em;
-        }
-        .spinner-border.show {
-            display: inline-block;
-        }
-        .processing-message {
-            display: none;
-            font-size: 1rem;
-            color: #0056b3;
-        }
-        .processing-message.show {
-            display: inline-block;
-        }
+        
     </style>
     <script>
         async function makeRequest(url, method, data) {
@@ -218,7 +201,6 @@
         }
 
         async function handleGetRequest(endpoint) {
-            showProcessing("Fetching request data .....")
     try {
         const response = await fetch(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}`);
         if (!response.ok) {
@@ -228,8 +210,6 @@
         document.getElementById('result').innerText = JSON.stringify(result, null, 2);
     } catch (error) {
         document.getElementById('result').innerText = `Error: ${error.message}`;
-    }finally{
-        hideProcessing()
     }
 }
 
@@ -316,17 +296,6 @@
                 document.getElementById('profile-hours').innerText = '';
                 document.getElementById('profile-logo').src = 'default-logo.png';
             }
-        }
-
-            function showProcessing(message) {
-            document.querySelector('.spinner-border').classList.add('show');
-            document.querySelector('.processing-message').innerText = message;
-            document.querySelector('.processing-message').classList.add('show');
-        }
-
-        function hideProcessing() {
-            document.querySelector('.spinner-border').classList.remove('show');
-            document.querySelector('.processing-message').classList.remove('show');
         }
         document.addEventListener('DOMContentLoaded', () => {
             // Show default section
