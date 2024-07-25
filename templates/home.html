@@ -255,8 +255,9 @@
             chatBox.innerHTML += `<div class="chat-message user">${message}</div>`;
             document.querySelector('#chat-message').value = '';
             // Simulate bot response
+            response_message = handleGetRequest('api/messages/');
             setTimeout(() => {
-                chatBox.innerHTML += `<div class="chat-message bot">This is a response from the bot.</div>`;
+                chatBox.innerHTML += `<div class="chat-message bot">${response_message}</div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, 1000);
         }
@@ -365,7 +366,7 @@
                 <p><strong>Phone:</strong> <span id="profile-phone">Phone</span></p>
                 <p><strong>Address:</strong> <span id="profile-address">Address</span></p>
                 <p><strong>Working Hours:</strong> <span id="profile-hours">Working Hours</span></p>
-                <img id="profile-logo" src="default-logo.png" alt="Profile Logo">
+                <img id="profile-logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3c6obzttm1Fvwpo0HtqFLwM6J3EZfsbKIxQ&s" alt="Profile Logo">
             </div>
         </div>
 
