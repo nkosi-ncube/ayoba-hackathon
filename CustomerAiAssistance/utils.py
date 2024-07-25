@@ -1,5 +1,6 @@
 import logging
 import os
+import vertexai
 from vertexai.generative_models import GenerativeModel  # Replace with the actual import path
 
 def generate_normal_response(user_prompt):
