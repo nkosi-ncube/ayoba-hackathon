@@ -337,8 +337,8 @@ async function fetchAndDisplayOrders() {
         listItem.innerHTML = `
             <h5>Order ID: ${order.id}</h5>
             <p>Total: $${order.total}</p>
-            <p>Product IDs: ${order.productIds.join(', ')}</p>
-            <p>Customer ID: ${order.customerId}</p>
+            <p>Product IDs: ${order.items}</p>
+            <p>Customer ID: ${order.customer}</p>
         `;
         ordersList.appendChild(listItem);
     });
