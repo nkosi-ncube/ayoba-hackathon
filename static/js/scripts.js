@@ -107,6 +107,19 @@ function showSection(sectionId) {
     document.querySelectorAll('.section').forEach(section => {
         section.style.display = section.id === sectionId ? 'block' : 'none';
     });
+
+    // Call fetch functions for specific sections
+    if (sectionId === 'products-section') {
+        fetchAndDisplayProducts();
+    } else if (sectionId === 'orders-section') {
+        fetchAndDisplayOrders();
+    } else if (sectionId === 'invoices-section') {
+        fetchAndDisplayInvoices();
+    } else if (sectionId === 'payments-section') {
+        fetchAndDisplayPayments();
+    } else if (sectionId === 'queries-section') {
+        fetchAndDisplayQueries();
+    }
 }
 
 async function sendMessage(event) {
@@ -205,7 +218,10 @@ async function fetchAndDisplayOrders() {
 }
 
 async function fetchAndDisplayProducts() {
+    console.log('Fetching products...'); // Log to check if function is triggered
     const products = await handleGetRequest('products');
+    console.log('Products fetched:', products); // Log the fetched products
+
     const productsSection = document.getElementById('products-section');
     const productsList = document.createElement('ul');
     productsList.className = 'list-group';
@@ -222,6 +238,7 @@ async function fetchAndDisplayProducts() {
 
     productsSection.appendChild(productsList);
 }
+
 
 async function fetchAndDisplayInvoices() {
     const invoices = await handleGetRequest('invoices');
