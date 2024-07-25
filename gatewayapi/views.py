@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .services import send_message, send_file_message, get_media_slots, get_avatar_slot
 from django.conf import settings
 from django.shortcuts import render
+import requests
 
 def home(request):
     return render(request, 'home.html')
