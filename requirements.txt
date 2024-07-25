@@ -7,6 +7,7 @@ gunicorn==22.0.0
 idna==3.7
 packaging==24.1
 requests==2.32.3
+retry-requests==2.0.0
 sqlparse==0.5.1
 urllib3==2.2.2
 whitenoise==6.7.0
