@@ -307,7 +307,7 @@ async function broadcastMessage() {
             chatBox.innerHTML += `<div class="chat-message user">${message}</div>`;
             document.querySelector('#chat-message').value = '';
             // Simulate bot response
-            response_message = handleGetRequest('api/messages/');
+            response_message = handleGetRequest('api/messages');
             setTimeout(() => {
                 chatBox.innerHTML += `<div class="chat-message bot">${response_message}</div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
