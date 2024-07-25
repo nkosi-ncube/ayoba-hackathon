@@ -1,3 +1,16 @@
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Show default section
+    showSection('chat-section');
+    
+    // Call the functions to fetch and display data
+    fetchBusinessProfile();
+    fetchAndDisplayProducts();
+    fetchAndDisplayOrders();
+    fetchAndDisplayInvoices();
+    fetchAndDisplayPayments();
+    fetchAndDisplayCustomers(); // Uncomment if you want to display customers as well
+});
 async function makeRequest(url, method, data) {
     const response = await fetch(url, {
         method: method,
@@ -107,19 +120,6 @@ function showSection(sectionId) {
     document.querySelectorAll('.section').forEach(section => {
         section.style.display = section.id === sectionId ? 'block' : 'none';
     });
-
-    // Call fetch functions for specific sections
-    if (sectionId === 'products-section') {
-        fetchAndDisplayProducts();
-    } else if (sectionId === 'orders-section') {
-        fetchAndDisplayOrders();
-    } else if (sectionId === 'invoices-section') {
-        fetchAndDisplayInvoices();
-    } else if (sectionId === 'payments-section') {
-        fetchAndDisplayPayments();
-    } else if (sectionId === 'queries-section') {
-        fetchAndDisplayQueries();
-    }
 }
 
 async function sendMessage(event) {
