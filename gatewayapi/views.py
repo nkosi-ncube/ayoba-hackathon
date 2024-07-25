@@ -1,8 +1,8 @@
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Product, Customer, Order, Invoice, Payment, Query, Admin,OrderItem,BusinessProfile,Message
-from .serializers import ProductSerializer, CustomerSerializer, OrderSerializer, InvoiceSerializer, PaymentSerializer, QuerySerializer, AdminSerializer,OrderItemSerializer,BusinessProfileSerializer,MessageSerializer
+from .models import Product, Customer, Order, Invoice, Payment, Query, Admin,OrderItem,BusinessProfile,Message,Testing
+from .serializers import ProductSerializer, CustomerSerializer, OrderSerializer, InvoiceSerializer, PaymentSerializer, QuerySerializer, AdminSerializer,OrderItemSerializer,BusinessProfileSerializer,MessageSerializer,TestingSerializer
 from django.views.decorators.csrf import csrf_exempt
 from .services import send_message, send_file_message, get_media_slots, get_avatar_slot
 from django.conf import settings
@@ -110,6 +110,10 @@ class MessageViewSet(viewsets.ModelViewSet):
 class BusinessProfileViewSet(viewsets.ModelViewSet):
     queryset = BusinessProfile.objects.all()
     serializer_class = BusinessProfileSerializer
+
+class TestingViewSet(viewsets.ModelViewSet):
+    queryset = Testing.objects.all()
+    serializer_class = TestingSerializer
 class OrderItemViewSet(viewsets.ModelViewSet):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer

@@ -1,11 +1,14 @@
 from rest_framework import serializers
-from .models import Product, Customer, Order, Invoice, Payment, Query, Admin,OrderItem,BusinessProfile,Message
+from .models import Product, Customer, Order, Invoice, Payment, Query, Admin,OrderItem,BusinessProfile,Message,Testing
 
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = '__all__'
-
+class TestingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Testing
+        fields = '__all__'
 class BusinessProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = BusinessProfile
