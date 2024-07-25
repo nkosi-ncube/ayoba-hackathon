@@ -550,17 +550,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </form>
         </div>
         <!-- Broadcast Section -->
-<div id="broadcast-section" style="display: none;" class="section">
-    <h2>Broadcast Message To All Customers</h2>
-    <form id="broadcast-form">
-        <div class="form-group">
-            <label for="message">Message:</label>
-            <textarea id="message" class="form-control" rows="4" required></textarea>
-        </div>
-        <button type="button" class="btn btn-primary" onclick="broadcastMessage()">Send Message</button>
-    </form>
-    <div id="broadcast-result"></div>
-</div>
+
 
         <div id="products-section" class="section">
             <h2>Products</h2>
@@ -640,6 +630,18 @@ document.addEventListener('DOMContentLoaded', () => {
             <button class="btn btn-primary" onclick="sendQueryToAI()">Send Query</button>
             <pre id="ai-response"></pre>
         </div>
+    </div>
+
+    <div id="broadcast-section" style="display: none;" class="section">
+        <h2>Broadcast Message To All Customers</h2>
+        <form id="broadcast-form">
+            <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea id="message" class="form-control" rows="4" required></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="broadcastMessage()">Send Message</button>
+        </form>
+        <div id="broadcast-result"></div>
     </div>
 
     <div id="settings-panel" class="settings-panel">
