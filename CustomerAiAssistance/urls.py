@@ -1,9 +1,9 @@
 # CustomerAssistanceAPI/urls.py
 
 from django.urls import path
-from . import views
+from .views import QueryAPIView
 
 urlpatterns = [
-    path('queries/', views.ai_query_response, name='ai_query_response'),
+    path('queries/', QueryAPIView.as_view(), name='query-api'),
 ]
 

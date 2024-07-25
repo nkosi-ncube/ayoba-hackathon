@@ -1,27 +1,18 @@
 # CustomerAssistanceAPI/views.py
 
-from django.http import JsonResponse
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import QuerySerializer
 
-@csrf_exempt
-def ai_query_response(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            user_query = data.get('query', '')
-            
-            # Here you would send the query to your AI system
-            ai_response = send_query_to_ai(user_query)
-            
-            # Return the AI response
-            return JsonResponse({'response': ai_response})
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
-    return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
-
-def send_query_to_ai(query):
-    # Simulate sending a query to AI and getting a response
-    # Replace this with your actual AI interaction logic
-    return f"AI response to '{query}'"
+class QueryAPIView(APIView):
+    def post(self, request):
+        serializer = QuerySerializer(data=request.data)
+        if serializer.is_valid():
+            query = serializer.validated_data['query']
+            # Process the query, for example, send it to the AI
+            response_data = {
+                "response": "This is a placeholder response from AI."
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
