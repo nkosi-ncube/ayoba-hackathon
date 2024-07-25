@@ -303,7 +303,14 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Show default section
             showSection('chat-section');
+            
             fetchBusinessProfile();
+            handleGetRequest('products');
+            handleGetRequest('customers');
+            handleGetRequest('orders');
+            handleGetRequest('invoice');
+            handleGetRequest('payments');
+
         });
     </script>
 </head>
@@ -386,7 +393,7 @@
         </div>
         <div id="products-section" class="section">
             <h2>Products</h2>
-            <button onclick="handleGetRequest('products')">Get Products</button>
+            <!-- <button onclick="handleGetRequest('products')">Get Products</button>
             <div id="result"></div>
             <form id="products-form" onsubmit="handleFormSubmit(event, 'products/')">
                 <div class="form-group">
@@ -398,11 +405,11 @@
                     <input type="number" class="form-control" id="product-price" name="price" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Add Product</button>
-            </form>
+            </form> -->
         </div>
         <div id="orders-section" class="section">
             <h2>Orders</h2>
-            <button onclick="handleGetRequest('orders')">Get Orders</button>
+            <!-- <button onclick="handleGetRequest('orders')">Get Orders</button>
             <div id="result"></div>
             <form id="orders-form" onsubmit="handleFormSubmit(event, 'orders/')">
                 <div class="form-group">
@@ -414,11 +421,11 @@
                     <input type="text" class="form-control" id="order-product-ids" name="productIds" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Place Order</button>
-            </form>
+            </form> -->
         </div>
         <div id="invoices-section" class="section">
             <h2>Invoices</h2>
-            <button onclick="handleGetRequest('invoices')">Get Invoices</button>
+            <!-- <button onclick="handleGetRequest('invoices')">Get Invoices</button>
             <div id="result"></div>
             <form id="invoices-form" onsubmit="handleFormSubmit(event, 'invoices/')">
                 <div class="form-group">
@@ -430,11 +437,11 @@
                     <input type="text" class="form-control" id="invoice-status" name="status" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Create Invoice</button>
-            </form>
+            </form> -->
         </div>
         <div id="payments-section" class="section">
             <h2>Payments</h2>
-            <button onclick="handleGetRequest('payments')">Get Payments</button>
+            <!-- <button onclick="handleGetRequest('payments')">Get Payments</button>
             <div id="result"></div>
             <form id="payments-form" onsubmit="handleFormSubmit(event, 'payments/')">
                 <div class="form-group">
@@ -450,7 +457,7 @@
                     <input type="number" class="form-control" id="payment-amount" name="amount" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Record Payment</button>
-            </form>
+            </form> -->
         </div>
         <div id="ai-query-section" class="section">
             <h2>AI Query</h2>
