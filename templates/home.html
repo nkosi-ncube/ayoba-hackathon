@@ -257,7 +257,7 @@
         }
         async function fetchBusinessProfile() {
             try {
-                const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/businessprofiles/?business_name=Ayooba Business');
+                const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/businessprofiles/?business_name=Ayoba Business');
                 const result = await response.json();
                 if (result.length > 0) {
                     const profile = result[0];
