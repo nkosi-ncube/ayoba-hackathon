@@ -4,473 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ayoba Business Chat</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        .navbar {
-            background-color: #0056b3;
-            padding: 10px 15px;
-            margin-left: 210px;
-            margin-right: 10px;
-        }
-        .navbar-brand {
-            color: #fff !important;
-            font-size: 24px;
-        }
-        .navbar-brand img {
-            max-height: 40px;
-            margin-right: 15px;
-        }
-        .navbar-nav .nav-link {
-            color: #fff !important;
-        }
-        .navbar-nav .nav-link:hover {
-            color: #e0e0e0 !important;
-        }
-        .sidebar {
-            background-color: #0056b3;
-            color: #fff;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 200px;
-            padding-top: 20px;
-            padding-left: 10px;
-            padding-right: 10px;
-            overflow: auto;
-        }
-        .sidebar .nav-link {
-            color: #fff;
-            text-align: center;
-            display: block;
-            margin-bottom: 20px;
-        }
-        .sidebar .nav-link:hover {
-            color: #e0e0e0;
-        }
-        .sidebar .nav-link i {
-            font-size: 24px;
-        }
-        .sidebar .nav-link span {
-            display: block;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        .sidebar .profile-section {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .sidebar .profile-section img {
-            border-radius: 50%;
-            height: 80px;
-            width: 80px;
-            margin-bottom: 10px;
-        }
-        .sidebar .profile-section .profile-info {
-            color: #fff;
-            text-align: center;
-        }
-        .sidebar .profile-section .profile-info h3 {
-            margin: 0;
-            font-size: 16px;
-        }
-        .content {
-            margin-left: 300px;
-            padding: 20px;
-        }
-        .chat-box, .query-box {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: #fff;
-            padding: 15px;
-            height: 500px;
-            overflow-y: scroll;
-        }
-        .chat-message {
-            border-radius: 5px;
-            padding: 10px;
-            margin: 5px 0;
-            max-width: 60%;
-            clear: both;
-        }
-        .chat-message.bot {
-            background: #e9f7fc;
-            float: left;
-        }
-        .chat-message.user {
-            background: #d1ecf1;
-            float: right;
-        }
-        .form-control {
-            border-radius: 0;
-        }
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        .modal-header {
-            background-color: #0056b3;
-            color: #fff;
-        }
-        .modal-footer {
-            border-top: 1px solid #ddd;
-        }
-        .modal-body {
-            padding: 20px;
-        }
-        .btn-primary {
-            background-color: #0056b3;
-            border: none;
-        }
-        .btn-primary:hover {
-            background-color: #004494;
-        }
-        .btn-secondary {
-            background-color: #6c757d;
-            border: none;
-        }
-        .btn-secondary:hover {
-            background-color: #5a6268;
-        }
-        .settings-panel {
-            display: none;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            position: absolute;
-            right: 20px;
-            top: 60px;
-            width: 300px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .settings-panel.active {
-            display: block;
-        }
-        .settings-panel h2 {
-            margin-top: 0;
-        }
-        .settings-panel button {
-            margin-right: 10px;
-        }
-        .profile-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .profile-section img {
-            border-radius: 50%;
-            height: 80px;
-            width: 80px;
-            margin-bottom: 10px;
-        }
-        .profile-section .profile-info {
-            color: #fff;
-            text-align: center;
-        }
-        .sidebar .nav-item {
-            margin-bottom: 20px;
-        }
-        .section {
-            display: none;
-        }
-
-        
-    </style>
-    <script>
-        async function makeRequest(url, method, data) {
-            const response = await fetch(url, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-            const result = await response.json();
-            document.getElementById('result').innerText = JSON.stringify(result, null, 2);
-        }
-
-        async function fetchCustomers() {
-    try {
-        const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/customers');
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const customers = await response.json();
-        return customers.map(customer => customer.phoneNumber); // Adjust field as necessary
-    } catch (error) {
-        document.getElementById('broadcast-result').innerText = `Error: ${error.message}`;
-        return [];
-    }
-}
-async function broadcastMessage() {
-    const message = document.getElementById('message').value;
-    if (!message) {
-        document.getElementById('broadcast-result').innerText = 'Message cannot be empty!';
-        return;
-    }
-
-    try {
-        const customers = await fetchCustomers();
-        if (customers.length === 0) {
-            document.getElementById('broadcast-result').innerText = 'No customers found!';
-            return;
-        }
-
-        const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/messages/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                message: message,
-                phoneNumbers: customers,
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        document.getElementById('broadcast-result').innerText = 'Message sent successfully!';
-    } catch (error) {
-        document.getElementById('broadcast-result').innerText = `Error: ${error.message}`;
-    }
-}
-
-
-        async function handleGetRequest(endpoint) {
-    try {
-        const response = await fetch(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const result = await response.json();
-        console.log("Response", response);
-        console.log("Result", result);
-        return result; // Return the result for further processing
-    } catch (error) {
-        document.getElementById('result').innerText = `Error: ${error.message}`;
-        return []; // Return an empty array in case of an error
-    }
-}
-
-
-        function handleFormSubmit(event, endpoint) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData.entries());
-            makeRequest(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}`, 'POST', data);
-        }
-
-        async function sendQueryToAI() {
-            const query = document.getElementById('query').value;
-            try {
-                const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/customer-assistance/queries/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ query: query })
-                });
-                const result = await response.json();
-                document.getElementById('ai-response').innerText = JSON.stringify(result, null, 2);
-                const chatBox = document.querySelector('#query-box');
-                chatBox.innerHTML += `<div class="chat-message user">${query}</div>`;
-                chatBox.innerHTML += `<div class="chat-message bot">${result.response}</div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            } catch (error) {
-                document.getElementById('ai-response').innerText = `Error: ${error.message}`;
-            }
-        }
-
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.style.display = section.id === sectionId ? 'block' : 'none';
-            });
-        }
-
-        async function sendMessage(event) {
-            event.preventDefault();
-            const message = document.querySelector('#chat-message').value;
-            const chatBox = document.querySelector('#chat-box');
-            chatBox.innerHTML += `<div class="chat-message user">${message}</div>`;
-            document.querySelector('#chat-message').value = '';
-            // Simulate bot response
-            response_message = handleGetRequest('api/messages');
-            setTimeout(() => {
-                chatBox.innerHTML += `<div class="chat-message bot">${response_message}</div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 1000);
-        }
-
-        function toggleSettings() {
-            const settingsPanel = document.querySelector('#settings-panel');
-            settingsPanel.classList.toggle('active');
-        }
-        async function fetchBusinessProfile() {
-            try {
-                const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/businessprofiles/?business_name=Ayoba Business');
-                const result = await response.json();
-                if (result.length > 0) {
-                    const profile = result[0];
-                    document.getElementById('profile-name').innerText = profile.business_name;
-                    document.getElementById('profile-description').innerText = profile.description || 'No description available';
-                    document.getElementById('profile-email').innerText = profile.contact_email || 'No contact email';
-                    document.getElementById('profile-phone').innerText = profile.contact_phone || 'No contact phone';
-                    document.getElementById('profile-address').innerText = profile.address || 'No address available';
-                    document.getElementById('profile-hours').innerText = profile.working_hours || 'No working hours information';
-                    document.getElementById('profile-logo').src = profile.logo || 'default-logo.png';
-                } else {
-                    document.getElementById('profile-name').innerText = 'Profile not found';
-                    document.getElementById('profile-description').innerText = '';
-                    document.getElementById('profile-email').innerText = '';
-                    document.getElementById('profile-phone').innerText = '';
-                    document.getElementById('profile-address').innerText = '';
-                    document.getElementById('profile-hours').innerText = '';
-                    document.getElementById('profile-logo').src = 'default-logo.png';
-                }
-            } catch (error) {
-                document.getElementById('profile-name').innerText = 'Error fetching profile';
-                document.getElementById('profile-description').innerText = '';
-                document.getElementById('profile-email').innerText = '';
-                document.getElementById('profile-phone').innerText = '';
-                document.getElementById('profile-address').innerText = '';
-                document.getElementById('profile-hours').innerText = '';
-                document.getElementById('profile-logo').src = 'default-logo.png';
-            }
-        }
-        
-
-        async function fetchAndDisplayCustomers() {
-    const customers = await handleGetRequest('customers');
-    const customersSection = document.getElementById('customers-section');
-    const customersList = document.createElement('ul');
-    customersList.className = 'list-group';
-
-    customers.forEach(customer => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item';
-        listItem.innerHTML = `
-            <h5>${customer.name}</h5>
-            <p>Language: ${customer.language}</p>
-        `;
-        customersList.appendChild(listItem);
-    });
-
-    customersSection.appendChild(customersList);
-}
-
-async function fetchAndDisplayOrders() {
-    const orders = await handleGetRequest('orders');
-    const ordersSection = document.getElementById('orders-section');
-    const ordersList = document.createElement('ul');
-    ordersList.className = 'list-group';
-
-    // Clear any existing content
-    ordersSection.innerHTML = '';
-
-    orders.forEach(order => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item';
-        listItem.innerHTML = `
-            <h5>Order ID: ${order.id}</h5>
-            <p>Total: R${order.total}</p>
-            <p>Product IDs: ${order.items}</p>
-            <p>Customer ID: ${order.customer}</p>
-        `;
-        ordersList.appendChild(listItem);
-    });
-
-    ordersSection.appendChild(ordersList);
-}
-
-async function fetchAndDisplayProducts() {
-    const products = await handleGetRequest('products');
-    const productsSection = document.getElementById('products-section');
-    const productsList = document.createElement('ul');
-    productsList.className = 'list-group';
-
-    products.forEach(product => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item';
-        listItem.innerHTML = `
-            <h5>Product Name: ${product.name}</h5>
-            <p>Price: R${product.price}</p>
-        `;
-        productsList.appendChild(listItem);
-    });
-    productsSection.appendChild(productsList);
-}
-
-async function fetchAndDisplayInvoices() {
-    const invoices = await handleGetRequest('invoices');
-    const invoicesSection = document.getElementById('invoices-section');
-    const invoicesList = document.createElement('ul');
-    invoicesList.className = 'list-group';
-
-    invoices.forEach(invoice => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item';
-        listItem.innerHTML = `
-            <h5>Order ID: ${invoice.order}</h5>
-            <p>Status: ${invoice.status}</p>
-        `;
-        invoicesList.appendChild(listItem);
-    });
-    invoicesSection.appendChild(invoicesList);
-}
-
-async function fetchAndDisplayPayments(){
-    const payments = await handleGetRequest('payments');
-    const paymentsSection = document.getElementById('payments-section');
-    const paymentsList = document.createElement('ul');
-    paymentsList.className = 'list-group';
-
-    payments.forEach(payment => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item';
-        listItem.innerHTML = `
-            <h5>Order ID: ${payment.order}</h5>
-            <p>Status: ${payment.status}</p>
-        `;
-        paymentsList.appendChild(listItem);
-    });
-    paymentsSection.appendChild(paymentsList);
-
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-            // Show default section
-            showSection('chat-section');
-            // showSection('broadcast-section');
-            
-            fetchBusinessProfile();
-
-            fetchAndDisplayProducts();
-            fetchAndDisplayOrders();
-            fetchAndDisplayInvoices()
-            fetchAndDisplayPayments();
-            // fetchAndDisplayCustomers();
-
-        });
-
-    </script>
+    <!-- Bootstrap CSS (CDN) -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome (CDN) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <!-- jQuery (CDN) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS (CDN) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/scripts.js' %}" defer></script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg">
         <a class="navbar-brand" href="#">
-            <img src="https://mir-s3-cdn-cf.behance.net/projects/404/6bd70c141997923.Y3JvcCwxMTgwLDkyMywzNjUsNzg.png" alt="Ayoba Logo"> Ayoba Business
+            <img src="{% static 'images/ayoba.jpg' %}" alt="Ayoba Logo"> Ayoba Business
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -486,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     <div class="sidebar">
         <div class="profile-section">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3c6obzttm1Fvwpo0HtqFLwM6J3EZfsbKIxQ&s" alt="Avatar">
+            <img src="{% static 'images/avatar.png' %}" alt="Avatar">
             <div class="profile-info">
                 <h3>Business Profile</h3>
                 <p>@ayoba_business</p>
@@ -503,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <i class="fas fa-box"></i><span>Products</span>
             </a>
             <a class="nav-link" href="#" onclick="showSection('orders-section')">
-                <i class="fas fa-shopping-cart"></i><span>Orders</span>
+                <i class="fas fa-receipt"></i><span>Orders</span>
             </a>
             <a class="nav-link" href="#" onclick="showSection('invoices-section')">
                 <i class="fas fa-file-invoice"></i><span>Invoices</span>
@@ -511,147 +61,59 @@ document.addEventListener('DOMContentLoaded', () => {
             <a class="nav-link" href="#" onclick="showSection('payments-section')">
                 <i class="fas fa-credit-card"></i><span>Payments</span>
             </a>
-            <a class="nav-link" href="#" onclick="showSection('ai-query-section')">
-                <i class="fas fa-robot"></i><span>AI Query</span>
-            </a>
-
-            <a class="nav-link" href="#" onclick="showSection('broadcast-section')">
-                <i class="fas fa-broadcast-tower"></i> <span>Broadcast</span>
-            </a>
-            
         </div>
     </div>
 
     <div class="content">
-         <!-- Profile Section -->
-         <div id="profile-section" class="section">
-            <div class="profile-detail">
-                <h3>Business Profile</h3>
-                <p><strong>Name:</strong> <span id="profile-name">Business Name</span></p>
-                <p><strong>Description:</strong> <span id="profile-description">Business Description</span></p>
-                <p><strong>Email:</strong> <span id="profile-email">Email</span></p>
-                <p><strong>Phone:</strong> <span id="profile-phone">Phone</span></p>
-                <p><strong>Address:</strong> <span id="profile-address">Address</span></p>
-                <p><strong>Working Hours:</strong> <span id="profile-hours">Working Hours</span></p>
-                <img id="profile-logo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3c6obzttm1Fvwpo0HtqFLwM6J3EZfsbKIxQ&s" alt="Profile Logo">
-            </div>
+        <div id="settings-panel" class="settings-panel">
+            <h2>Settings</h2>
+            <button onclick="toggleSettings()">Close</button>
         </div>
-
+        <div id="profile-section" class="section">
+            <!-- Profile content -->
+        </div>
         <div id="chat-section" class="section">
-            <h2>Business Chat</h2>
             <div class="chat-box" id="chat-box"></div>
-            <form id="chat-form" onsubmit="sendMessage(event)">
-                <div class="input-group">
-                    <input type="text" class="form-control" id="chat-message" placeholder="Type a message" required>
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit">Send</button>
-                    </div>
+            <form onsubmit="sendMessage(event)">
+                <div class="form-group">
+                    <input type="text" id="chat-message" class="form-control" placeholder="Type a message..." required>
                 </div>
+                <button type="submit" class="btn btn-primary">Send</button>
             </form>
         </div>
-        <!-- Broadcast Section -->
-
-
+        <div id="broadcast-section" class="section">
+            <div class="form-group">
+                <textarea id="message" class="form-control" rows="4" placeholder="Type your message here..."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="broadcastMessage()">Broadcast</button>
+            <div id="broadcast-result"></div>
+        </div>
         <div id="products-section" class="section">
             <h2>Products</h2>
-            <!-- <button onclick="handleGetRequest('products')">Get Products</button>
-            <div id="result"></div>
-            <form id="products-form" onsubmit="handleFormSubmit(event, 'products/')">
-                <div class="form-group">
-                    <label for="product-name">Product Name</label>
-                    <input type="text" class="form-control" id="product-name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="product-price">Product Price</label>
-                    <input type="number" class="form-control" id="product-price" name="price" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Add Product</button>
-            </form> -->
+            <div id="products-list"></div>
         </div>
         <div id="orders-section" class="section">
             <h2>Orders</h2>
-            <!-- <button onclick="handleGetRequest('orders')">Get Orders</button>
-            <div id="result"></div>
-            <form id="orders-form" onsubmit="handleFormSubmit(event, 'orders/')">
-                <div class="form-group">
-                    <label for="order-customer-id">Customer ID</label>
-                    <input type="number" class="form-control" id="order-customer-id" name="customerId" required>
-                </div>
-                <div class="form-group">
-                    <label for="order-product-ids">Product IDs (comma separated)</label>
-                    <input type="text" class="form-control" id="order-product-ids" name="productIds" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Place Order</button>
-            </form> -->
+            <div id="orders-list"></div>
         </div>
         <div id="invoices-section" class="section">
             <h2>Invoices</h2>
-            <!-- <button onclick="handleGetRequest('invoices')">Get Invoices</button>
-            <div id="result"></div>
-            <form id="invoices-form" onsubmit="handleFormSubmit(event, 'invoices/')">
-                <div class="form-group">
-                    <label for="invoice-order-id">Order ID</label>
-                    <input type="number" class="form-control" id="invoice-order-id" name="orderId" required>
-                </div>
-                <div class="form-group">
-                    <label for="invoice-status">Status</label>
-                    <input type="text" class="form-control" id="invoice-status" name="status" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Create Invoice</button>
-            </form> -->
+            <div id="invoices-list"></div>
         </div>
         <div id="payments-section" class="section">
             <h2>Payments</h2>
-            <!-- <button onclick="handleGetRequest('payments')">Get Payments</button>
-            <div id="result"></div>
-            <form id="payments-form" onsubmit="handleFormSubmit(event, 'payments/')">
-                <div class="form-group">
-                    <label for="payment-invoice-id">Invoice ID</label>
-                    <input type="number" class="form-control" id="payment-invoice-id" name="invoiceId" required>
-                </div>
-                <div class="form-group">
-                    <label for="payment-status">Status</label>
-                    <input type="text" class="form-control" id="payment-status" name="status" required>
-                </div>
-                <div class="form-group">
-                    <label for="payment-amount">Amount</label>
-                    <input type="number" class="form-control" id="payment-amount" name="amount" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Record Payment</button>
-            </form> -->
+            <div id="payments-list"></div>
         </div>
-        <div id="ai-query-section" class="section">
-            <h2>AI Query</h2>
+        <div id="query-section" class="section">
             <div class="query-box" id="query-box"></div>
-            <div class="form-group">
-                <label for="query">Ask AI</label>
-                <input type="text" class="form-control" id="query">
-            </div>
-            <button class="btn btn-primary" onclick="sendQueryToAI()">Send Query</button>
-            <pre id="ai-response"></pre>
+            <form onsubmit="sendQueryToAI(event)">
+                <div class="form-group">
+                    <input type="text" id="query" class="form-control" placeholder="Type your query..." required>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Query</button>
+                <div id="ai-response"></div>
+            </form>
         </div>
     </div>
-
-    <div id="broadcast-section" style="display: none;" class="section">
-        <h2>Broadcast Message To All Customers</h2>
-        <form id="broadcast-form">
-            <div class="form-group">
-                <label for="message">Message:</label>
-                <textarea id="message" class="form-control" rows="4" required></textarea>
-            </div>
-            <button type="button" class="btn btn-primary" onclick="broadcastMessage()">Send Message</button>
-        </form>
-        <div id="broadcast-result"></div>
-    </div>
-
-    <div id="settings-panel" class="settings-panel">
-        <h2>Settings</h2>
-        <button class="btn btn-secondary" onclick="toggleSettings()">Close</button>
-    </div>
-
-    <!-- jQuery and Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
