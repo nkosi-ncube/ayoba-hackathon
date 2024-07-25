@@ -303,7 +303,7 @@
         
 
         async function fetchAndDisplayCustomers() {
-    const customers = await fetchData('customers');
+    const customers = await handleGetRequest('customers');
     const customersSection = document.getElementById('customers-section');
     const customersList = document.createElement('ul');
     customersList.className = 'list-group';
@@ -322,7 +322,7 @@
 }
 
 async function fetchAndDisplayOrders() {
-    const orders = await fetchData('orders');
+    const orders = await handleGetRequest('orders');
     const ordersSection = document.getElementById('orders-section');
     const ordersList = document.createElement('ul');
     ordersList.className = 'list-group';
