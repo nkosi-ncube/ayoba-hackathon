@@ -39,19 +39,19 @@ def translate_text(text,choice ):
     #     "swh_Latn"
     # ]
 
-    # user_choice = int(input("""Choose a number for the source language: 
-    #     "0 nso_Latn",
-    #     "1 afr_Latn",
-    #     "2 sot_Latn",
-    #     "3 ssw_Latn",
-    #     "4 tso_Latn",
-    #     "5 tsn_Latn",
-    #     "6 xho_Latn",
-    #     "7 zul_Latn",
-    #     "8 eng_Latn",
-    #     "9 swh_Latn"
-    # ]
-    # """))
+    user_choice = int(input("""Choose a number for the source language: 
+        "0 nso_Latn",
+        "1 afr_Latn",
+        "2 sot_Latn",
+        "3 ssw_Latn",
+        "4 tso_Latn",
+        "5 tsn_Latn",
+        "6 xho_Latn",
+        "7 zul_Latn",
+        "8 eng_Latn",
+        "9 swh_Latn"
+    ]
+    """))
 
     payload = {
     "input_text": text,
