@@ -3,22 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AyobaBiz Connect</title>
+    <title>Business API & AyobaBiz Connect</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
+        .container { margin-top: 20px; }
+        .section { margin-bottom: 20px; }
+        .settings-panel { position: fixed; top: 10%; right: 0; background: #fff; border: 1px solid #ddd; padding: 10px; width: 250px; display: none; }
         .sidebar { height: 100vh; width: 200px; position: fixed; top: 0; left: 0; background: #f8f9fa; padding: 10px; }
         .content { margin-left: 220px; padding: 20px; }
-        .section { display: none; }
-        .settings-panel { position: fixed; top: 10%; right: 0; background: #fff; border: 1px solid #ddd; padding: 10px; width: 250px; }
         .chat-box { border: 1px solid #ddd; height: 300px; overflow-y: auto; padding: 10px; }
+        .loading { cursor: wait; }
+        .btn.loading { cursor: wait; }
+        .btn.loading::after { content: " ..."; font-weight: bold; }
     </style>
     <script>
-        function showSection(id) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.style.display = 'none';
+        const endpoints = {
+            products: "https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/products/",
+            customers: "https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/customers/",
+            orders: "https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/orders/",
+            invoices: "https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/invoices/",
+            payments: "https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/payments/",
+            queries: "https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/queries/",
+            admins: "https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/admins/",
+            orderitems: "https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/orderitems/",
+            businessprofiles: "https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/businessprofiles/",
+            messages: "https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/messages/"
+        };
+
+        function setLoading(button, isLoading) {
+            button.classList.toggle('loading', isLoading);
+            button.dataset.originalText = button.dataset.originalText || button.textContent;
+            button.textContent = isLoading ? 'Processing...' : button.dataset.originalText;
+        }
+
+        function handleGetRequest(resource, button) {
+            setLoading(button, true);
+            fetch(endpoints[resource])
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('result').textContent = 'Error fetching data';
+                })
+                .finally(() => {
+                    setLoading(button, false);
+                });
+        }
+
+        function handleFormSubmit(event, resource, button) {
+            event.preventDefault();
+            setLoading(button, true);
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => { data[key] = value; });
+            
+            fetch(endpoints[resource], {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').textContent = 'Error submitting form';
+            })
+            .finally(() => {
+                setLoading(button, false);
             });
-            document.getElementById(id).style.display = 'block';
         }
 
         function toggleSettings() {
@@ -26,232 +85,212 @@
             panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
         }
 
-        async function handleFormSubmit(event, endpoint) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;
-            });
-            const response = await fetch(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}/`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
-            const result = await response.json();
-            document.getElementById('result').textContent = JSON.stringify(result, null, 2);
-        }
-
-        async function handleGetRequest(endpoint) {
-            const response = await fetch(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}/`);
-            const result = await response.json();
-            document.getElementById('result').textContent = JSON.stringify(result, null, 2);
-        }
-
         async function sendMessage(event) {
             event.preventDefault();
             const message = document.getElementById('chat-message').value;
-            const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/messages/', {
+            const response = await fetch(endpoints.messages, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text: message }),
+                body: JSON.stringify({ content: message }),
             });
             const result = await response.json();
-            document.getElementById('chat-box').innerHTML += `<div><b>You:</b> ${message}</div>`;
-            document.getElementById('chat-message').value = '';
-            document.getElementById('chat-box').innerHTML += `<div><b>Business:</b> ${result.text}</div>`;
+            document.getElementById('result').textContent = JSON.stringify(result, null, 2);
         }
     </script>
 </head>
 <body>
     <div class="sidebar">
-        <h4>AyobaBiz Connect</h4>
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('fetch-orders')">Fetch Orders</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('create-order')">Create Order</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('chat')">Chat to Business</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('create-business-profile')">Create Business Profile</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('update-business-profile')">Update Business Profile</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('manage-contacts')">Manage Contacts</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('add-media')">Add Media</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('notifications')">Notifications</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('user-preferences')">User Preferences</a>
-            </li>
-        </ul>
+        <h4>Navigation</h4>
+        <button class="btn btn-secondary" onclick="toggleSettings()">Settings</button>
+        <button class="btn btn-primary" onclick="showSection('products')">Products</button>
+        <button class="btn btn-primary" onclick="showSection('customers')">Customers</button>
+        <button class="btn btn-primary" onclick="showSection('orders')">Orders</button>
+        <button class="btn btn-primary" onclick="showSection('invoices')">Invoices</button>
+        <button class="btn btn-primary" onclick="showSection('payments')">Payments</button>
+        <button class="btn btn-primary" onclick="showSection('queries')">Queries</button>
+        <button class="btn btn-primary" onclick="showSection('admins')">Admins</button>
+        <button class="btn btn-primary" onclick="showSection('orderitems')">Order Items</button>
+        <button class="btn btn-primary" onclick="showSection('businessprofiles')">Business Profiles</button>
+        <button class="btn btn-primary" onclick="showSection('messages')">Messages</button>
     </div>
 
     <div class="content">
-        <div id="fetch-orders" class="section">
-            <h2>Fetch Orders</h2>
-            <button type="button" class="btn btn-primary" onclick="handleGetRequest('orders')">Fetch Orders</button>
+        <div id="products" class="section">
+            <h2>Products</h2>
+            <button class="btn btn-primary" data-original-text="Fetch Products" onclick="handleGetRequest('products', this)">Fetch Products</button>
+            <form onsubmit="handleFormSubmit(event, 'products', this.querySelector('button'))">
+                <div class="form-group">
+                    <label for="productName">Name</label>
+                    <input type="text" class="form-control" id="productName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Price</label>
+                    <input type="number" class="form-control" id="productPrice" name="price" step="0.01" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Product</button>
+            </form>
             <pre id="result"></pre>
         </div>
 
-        <div id="create-order" class="section">
-            <h2>Create Order</h2>
-            <form onsubmit="handleFormSubmit(event, 'orders');">
+        <div id="customers" class="section">
+            <h2>Customers</h2>
+            <button class="btn btn-primary" data-original-text="Fetch Customers" onclick="handleGetRequest('customers', this)">Fetch Customers</button>
+            <form onsubmit="handleFormSubmit(event, 'customers', this.querySelector('button'))">
                 <div class="form-group">
-                    <label for="customer">Customer ID</label>
-                    <input type="text" class="form-control" id="customer" name="customer">
+                    <label for="customerName">Name</label>
+                    <input type="text" class="form-control" id="customerName" name="name" required>
                 </div>
                 <div class="form-group">
-                    <label for="total">Total</label>
-                    <input type="text" class="form-control" id="total" name="total">
+                    <label for="customerLanguage">Language</label>
+                    <input type="text" class="form-control" id="customerLanguage" name="language" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Customer</button>
+            </form>
+            <pre id="result"></pre>
+        </div>
+
+        <div id="orders" class="section">
+            <h2>Orders</h2>
+            <button class="btn btn-primary" data-original-text="Fetch Orders" onclick="handleGetRequest('orders', this)">Fetch Orders</button>
+            <form onsubmit="handleFormSubmit(event, 'orders', this.querySelector('button'))">
+                <div class="form-group">
+                    <label for="orderCustomerId">Customer ID</label>
+                    <input type="text" class="form-control" id="orderCustomerId" name="customer" required>
+                </div>
+                <div class="form-group">
+                    <label for="orderTotal">Total</label>
+                    <input type="number" class="form-control" id="orderTotal" name="total" step="0.01" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Create Order</button>
             </form>
             <pre id="result"></pre>
         </div>
 
-        <div id="chat" class="section">
-            <h2>Chat to Business</h2>
-            <div class="chat-box" id="chat-box">
-                <!-- Chat messages will be appended here -->
-            </div>
-            <form onsubmit="sendMessage(event);">
+        <div id="invoices" class="section">
+            <h2>Invoices</h2>
+            <button class="btn btn-primary" data-original-text="Fetch Invoices" onclick="handleGetRequest('invoices', this)">Fetch Invoices</button>
+            <form onsubmit="handleFormSubmit(event, 'invoices', this.querySelector('button'))">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="chat-message" placeholder="Type your message here">
-                </div>
-                <button type="submit" class="btn btn-primary">Send</button>
-            </form>
-        </div>
-
-        <div id="create-business-profile" class="section">
-            <h2>Create Business Profile</h2>
-            <form onsubmit="handleFormSubmit(event, 'businessprofiles');">
-                <div class="form-group">
-                    <label for="user">User ID</label>
-                    <input type="text" class="form-control" id="user" name="user">
+                    <label for="invoiceOrderId">Order ID</label>
+                    <input type="text" class="form-control" id="invoiceOrderId" name="order" required>
                 </div>
                 <div class="form-group">
-                    <label for="business_name">Business Name</label>
-                    <input type="text" class="form-control" id="business_name" name="business_name">
+                    <label for="invoiceStatus">Status</label>
+                    <input type="text" class="form-control" id="invoiceStatus" name="status" required>
                 </div>
-                <div class="form-group">
-                    <label for="contact_email">Contact Email</label>
-                    <input type="email" class="form-control" id="contact_email" name="contact_email">
-                </div>
-                <div class="form-group">
-                    <label for="contact_phone">Contact Phone</label>
-                    <input type="text" class="form-control" id="contact_phone" name="contact_phone">
-                </div>
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    <textarea class="form-control" id="address" name="address"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="working_hours">Working Hours</label>
-                    <textarea class="form-control" id="working_hours" name="working_hours"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea class="form-control" id="description" name="description"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Create Profile</button>
+                <button type="submit" class="btn btn-primary">Create Invoice</button>
             </form>
             <pre id="result"></pre>
         </div>
 
-        <div id="update-business-profile" class="section">
-            <h2>Update Business Profile</h2>
-            <form onsubmit="handleFormSubmit(event, 'businessprofiles');">
+        <div id="payments" class="section">
+            <h2>Payments</h2>
+            <button class="btn btn-primary" data-original-text="Fetch Payments" onclick="handleGetRequest('payments', this)">Fetch Payments</button>
+            <form onsubmit="handleFormSubmit(event, 'payments', this.querySelector('button'))">
                 <div class="form-group">
-                    <label for="profile_id">Profile ID</label>
-                    <input type="text" class="form-control" id="profile_id" name="profile_id">
+                    <label for="paymentInvoiceId">Invoice ID</label>
+                    <input type="text" class="form-control" id="paymentInvoiceId" name="invoice" required>
                 </div>
                 <div class="form-group">
-                    <label for="business_name">Business Name</label>
-                    <input type="text" class="form-control" id="business_name" name="business_name">
+                    <label for="paymentAmount">Amount</label>
+                    <input type="number" class="form-control" id="paymentAmount" name="amount" step="0.01" required>
                 </div>
                 <div class="form-group">
-                    <label for="contact_email">Contact Email</label>
-                    <input type="email" class="form-control" id="contact_email" name="contact_email">
+                    <label for="paymentStatus">Status</label>
+                    <input type="text" class="form-control" id="paymentStatus" name="status" required>
                 </div>
-                <div class="form-group">
-                    <label for="contact_phone">Contact Phone</label>
-                    <input type="text" class="form-control" id="contact_phone" name="contact_phone">
-                </div>
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    <textarea class="form-control" id="address" name="address"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="working_hours">Working Hours</label>
-                    <textarea class="form-control" id="working_hours" name="working_hours"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea class="form-control" id="description" name="description"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Update Profile</button>
+                <button type="submit" class="btn btn-primary">Create Payment</button>
             </form>
             <pre id="result"></pre>
         </div>
 
-        <div id="manage-contacts" class="section">
-            <h2>Manage Contacts</h2>
-            <form onsubmit="handleFormSubmit(event, 'customers');">
+        <div id="queries" class="section">
+            <h2>Queries</h2>
+            <button class="btn btn-primary" data-original-text="Fetch Queries" onclick="handleGetRequest('queries', this)">Fetch Queries</button>
+            <form onsubmit="handleFormSubmit(event, 'queries', this.querySelector('button'))">
                 <div class="form-group">
-                    <label for="name">Customer Name</label>
-                    <input type="text" class="form-control" id="name" name="name">
+                    <label for="queryMessage">Message</label>
+                    <input type="text" class="form-control" id="queryMessage" name="message" required>
                 </div>
-                <div class="form-group">
-                    <label for="language">Preferred Language</label>
-                    <input type="text" class="form-control" id="language" name="language">
-                </div>
-                <button type="submit" class="btn btn-primary">Add Customer</button>
+                <button type="submit" class="btn btn-primary">Create Query</button>
             </form>
             <pre id="result"></pre>
         </div>
 
-        <div id="add-media" class="section">
-            <h2>Add Media</h2>
-            <form onsubmit="handleFormSubmit(event, 'messages');">
+        <div id="admins" class="section">
+            <h2>Admins</h2>
+            <button class="btn btn-primary" data-original-text="Fetch Admins" onclick="handleGetRequest('admins', this)">Fetch Admins</button>
+            <form onsubmit="handleFormSubmit(event, 'admins', this.querySelector('button'))">
                 <div class="form-group">
-                    <label for="media_url">Media URL</label>
-                    <input type="text" class="form-control" id="media_url" name="media_url">
+                    <label for="adminPermissions">Permissions</label>
+                    <input type="text" class="form-control" id="adminPermissions" name="permissions" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Add Media</button>
+                <button type="submit" class="btn btn-primary">Create Admin</button>
             </form>
             <pre id="result"></pre>
         </div>
 
-        <div id="notifications" class="section">
-            <h2>Notifications</h2>
-            <p>Manage notifications here.</p>
+        <div id="orderitems" class="section">
+            <h2>Order Items</h2>
+            <button class="btn btn-primary" data-original-text="Fetch Order Items" onclick="handleGetRequest('orderitems', this)">Fetch Order Items</button>
+            <form onsubmit="handleFormSubmit(event, 'orderitems', this.querySelector('button'))">
+                <div class="form-group">
+                    <label for="orderitemOrderId">Order ID</label>
+                    <input type="text" class="form-control" id="orderitemOrderId" name="order" required>
+                </div>
+                <div class="form-group">
+                    <label for="orderitemProductId">Product ID</label>
+                    <input type="text" class="form-control" id="orderitemProductId" name="product" required>
+                </div>
+                <div class="form-group">
+                    <label for="orderitemQuantity">Quantity</label>
+                    <input type="number" class="form-control" id="orderitemQuantity" name="quantity" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Order Item</button>
+            </form>
+            <pre id="result"></pre>
         </div>
 
-        <div id="user-preferences" class="section">
-            <h2>User Preferences</h2>
-            <p>Set your preferences here.</p>
+        <div id="businessprofiles" class="section">
+            <h2>Business Profiles</h2>
+            <button class="btn btn-primary" data-original-text="Fetch Business Profiles" onclick="handleGetRequest('businessprofiles', this)">Fetch Business Profiles</button>
+            <form onsubmit="handleFormSubmit(event, 'businessprofiles', this.querySelector('button'))">
+                <div class="form-group">
+                    <label for="businessprofileName">Name</label>
+                    <input type="text" class="form-control" id="businessprofileName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="businessprofileDescription">Description</label>
+                    <input type="text" class="form-control" id="businessprofileDescription" name="description" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Business Profile</button>
+            </form>
+            <pre id="result"></pre>
+        </div>
+
+        <div id="messages" class="section">
+            <h2>Messages</h2>
+            <button class="btn btn-primary" data-original-text="Fetch Messages" onclick="handleGetRequest('messages', this)">Fetch Messages</button>
+            <form onsubmit="sendMessage(event)">
+                <div class="form-group">
+                    <label for="chat-message">Message</label>
+                    <input type="text" class="form-control" id="chat-message" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+            <pre id="result"></pre>
         </div>
     </div>
 
-    <div id="settings-panel" class="settings-panel" style="display: none;">
+    <div id="settings-panel" class="settings-panel">
         <h5>Settings</h5>
+        <!-- Add your settings options here -->
         <button class="btn btn-secondary" onclick="toggleSettings()">Close</button>
     </div>
-    
+
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
