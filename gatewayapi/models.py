@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 
 class Message(models.Model):
@@ -62,6 +63,7 @@ class OrderItem(models.Model):
         return f"{self.quantity} x {self.product.name}"
     
 
+
 class Invoice(models.Model):
     order = models.OneToOneField(Order, on_delete=models.CASCADE)
     status = models.CharField(max_length=255)
@@ -69,13 +71,15 @@ class Invoice(models.Model):
 
     def __str__(self):
         return f"Invoice {self.id} for {self.order.customer.name}"
-    
 
 class Payment(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
     status = models.CharField(max_length=255)
     payment_id = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def get_absolute_url(self):
+        return reverse('admin:gatewayapi_payment_change', args=[self.id])
 
     def __str__(self):
         return f"Payment {self.id} for {self.invoice.order.customer.name}"

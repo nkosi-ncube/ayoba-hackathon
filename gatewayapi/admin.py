@@ -10,7 +10,10 @@ class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'order', 'status', 'get_payment_status')
 
     def get_payment_status(self, obj):
-        return format_html('<a href="{}">{}</a>', obj.payment.get_absolute_url(), obj.payment.status)
+        payment = Payment.objects.filter(invoice=obj).first()
+        if payment:
+            return format_html('<a href="{}">{}</a>', payment.get_absolute_url(), payment.status)
+        return 'No payment'
     get_payment_status.short_description = 'Payment Status'
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
