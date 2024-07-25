@@ -336,7 +336,7 @@ async function fetchAndDisplayOrders() {
         listItem.className = 'list-group-item';
         listItem.innerHTML = `
             <h5>Order ID: ${order.id}</h5>
-            <p>Total: $${order.total}</p>
+            <p>Total: R${order.total}</p>
             <p>Product IDs: ${order.items}</p>
             <p>Customer ID: ${order.customer}</p>
         `;
@@ -356,11 +356,12 @@ async function fetchAndDisplayProducts() {
         const listItem = document.createElement('li');
         listItem.className = 'list-group-item';
         listItem.innerHTML = `
-            <h5>${product.name}</h5>
-            <p>Price: $${product.price}</p>
+            <h5>Product Name: ${product.name}</h5>
+            <p>Price: R${product.price}</p>
         `;
         productsList.appendChild(listItem);
     });
+    productsSection.appendChild(productsList);
 }
 
 async function fetchAndDisplayInvoices() {
