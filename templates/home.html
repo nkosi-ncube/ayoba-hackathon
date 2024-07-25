@@ -227,7 +227,7 @@ async function broadcastMessage() {
             return;
         }
 
-        const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/messages', {
+        const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/messages/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
