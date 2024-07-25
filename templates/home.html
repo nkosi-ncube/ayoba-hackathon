@@ -251,7 +251,7 @@
             });
         }
 
-        function sendMessage(event) {
+        async function sendMessage(event) {
             event.preventDefault();
             const message = document.querySelector('#chat-message').value;
             const chatBox = document.querySelector('#chat-box');
