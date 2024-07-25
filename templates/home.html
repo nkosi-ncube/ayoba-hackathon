@@ -3,239 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ayoba Business Chat</title>
+    <title>AyobaBiz Connect</title>
     <!-- Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        .navbar {
-            background-color: #0056b3;
-            padding: 10px 15px;
-        }
-        .navbar-brand {
-            color: #fff !important;
-            font-size: 24px;
-        }
-        .navbar-brand img {
-            max-height: 40px;
-            margin-right: 15px;
-        }
-        .navbar-nav .nav-link {
-            color: #fff !important;
-        }
-        .navbar-nav .nav-link:hover {
-            color: #e0e0e0 !important;
-        }
-        .sidebar {
-            background-color: #0056b3;
-            color: #fff;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 250px;
-            padding-top: 20px;
-            padding-left: 20px;
-            padding-right: 10px;
-        }
-        .sidebar .nav-link {
-            color: #fff;
-        }
-        .sidebar .nav-link:hover {
-            color: #e0e0e0;
-        }
-        .content {
-            margin-left: 250px;
-            padding: 20px;
-        }
-        .chat-box {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: #fff;
-            padding: 15px;
-            height: 500px;
-            overflow-y: scroll;
-        }
-        .chat-message {
-            background: #e9f7fc;
-            border-radius: 5px;
-            padding: 10px;
-            margin: 5px 0;
-        }
-        .chat-message.bot {
-            background: #e9f7fc;
-        }
-        .chat-message.user {
-            background: #d1ecf1;
-            text-align: right;
-        }
-        .form-control {
-            border-radius: 0;
-        }
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        .modal-header {
-            background-color: #0056b3;
-            color: #fff;
-        }
-        .modal-footer {
-            border-top: 1px solid #ddd;
-        }
-        .modal-body {
-            padding: 20px;
-        }
-        .btn-primary {
-            background-color: #0056b3;
-            border: none;
-        }
-        .btn-primary:hover {
-            background-color: #004494;
-        }
-        .btn-secondary {
-            background-color: #6c757d;
-            border: none;
-        }
-        .btn-secondary:hover {
-            background-color: #5a6268;
-        }
-        .settings-panel {
-            display: none;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            position: absolute;
-            right: 20px;
-            top: 60px;
-            width: 300px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .settings-panel.active {
-            display: block;
-        }
-        .settings-panel h2 {
-            margin-top: 0;
-        }
-        .settings-panel button {
-            margin-right: 10px;
-        }
-        .profile-section {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .profile-section img {
-            border-radius: 50%;
-            height: 50px;
-            width: 50px;
-            margin-right: 10px;
-        }
-        .profile-section .profile-info {
-            color: #fff;
-        }
+        .sidebar { height: 100vh; width: 200px; position: fixed; top: 0; left: 0; background: #f8f9fa; padding: 10px; }
+        .content { margin-left: 220px; padding: 20px; }
+        .section { display: none; }
+        .settings-panel { position: fixed; top: 10%; right: 0; background: #fff; border: 1px solid #ddd; padding: 10px; width: 250px; }
+        .chat-box { border: 1px solid #ddd; height: 300px; overflow-y: auto; padding: 10px; }
     </style>
     <script>
-        async function makeRequest(url, method, data) {
-            const response = await fetch(url, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-            const result = await response.json();
-            document.getElementById('result').innerText = JSON.stringify(result, null, 2);
-        }
-
-        async function handleGetRequest(endpoint) {
-            const response = await fetch(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}`);
-            const result = await response.json();
-            document.getElementById('result').innerText = JSON.stringify(result, null, 2);
-        }
-
-        function handleFormSubmit(event, endpoint) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData.entries());
-            makeRequest(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}`, 'POST', data);
-        }
-
-        async function sendQueryToAI() {
-            const query = document.getElementById('query').value;
-            try {
-                const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/customer-assistance/queries/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ query: query })
-                });
-                const result = await response.json();
-                document.getElementById('ai-response').innerText = JSON.stringify(result, null, 2);
-            } catch (error) {
-                document.getElementById('ai-response').innerText = `Error: ${error.message}`;
-            }
-        }
-
-        function showSection(sectionId) {
+        function showSection(id) {
             document.querySelectorAll('.section').forEach(section => {
-                section.style.display = section.id === sectionId ? 'block' : 'none';
+                section.style.display = 'none';
             });
-        }
-
-        function sendMessage(event) {
-            event.preventDefault();
-            const message = document.querySelector('#chat-message').value;
-            const chatBox = document.querySelector('#chat-box');
-            chatBox.innerHTML += `<div class="chat-message user">${message}</div>`;
-            document.querySelector('#chat-message').value = '';
-            // Simulate bot response
-            setTimeout(() => {
-                chatBox.innerHTML += `<div class="chat-message bot">This is a response from the bot.</div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 1000);
+            document.getElementById(id).style.display = 'block';
         }
 
         function toggleSettings() {
-            const settingsPanel = document.querySelector('#settings-panel');
-            settingsPanel.classList.toggle('active');
+            const panel = document.getElementById('settings-panel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function handleFormSubmit(event, endpoint) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            const response = await fetch(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+            const result = await response.json();
+            document.getElementById('result').textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function handleGetRequest(endpoint) {
+            const response = await fetch(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}/`);
+            const result = await response.json();
+            document.getElementById('result').textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function sendMessage(event) {
+            event.preventDefault();
+            const message = document.getElementById('chat-message').value;
+            const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/messages/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: message }),
+            });
+            const result = await response.json();
+            document.getElementById('chat-box').innerHTML += `<div><b>You:</b> ${message}</div>`;
+            document.getElementById('chat-message').value = '';
+            document.getElementById('chat-box').innerHTML += `<div><b>Business:</b> ${result.text}</div>`;
         }
     </script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg">
-        <a class="navbar-brand" href="#">
-            <img src="https://via.placeholder.com/40" alt="Ayoba Logo"> Ayoba Business
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="toggleSettings()">Settings</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
     <div class="sidebar">
-        <div class="profile-section">
-            <img src="https://via.placeholder.com/50" alt="Profile Picture">
-            <div class="profile-info">
-                <h5>User Name</h5>
-                <p>Business Owner</p>
-            </div>
-        </div>
+        <h4>AyobaBiz Connect</h4>
         <ul class="nav flex-column">
             <li class="nav-item">
                 <a class="nav-link" href="#" onclick="showSection('fetch-orders')">Fetch Orders</a>
@@ -256,13 +86,13 @@
                 <a class="nav-link" href="#" onclick="showSection('manage-contacts')">Manage Contacts</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('manage-invoices')">Manage Invoices</a>
+                <a class="nav-link" href="#" onclick="showSection('add-media')">Add Media</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('manage-payments')">Manage Payments</a>
+                <a class="nav-link" href="#" onclick="showSection('notifications')">Notifications</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('get-query')">Get Query</a>
+                <a class="nav-link" href="#" onclick="showSection('user-preferences')">User Preferences</a>
             </li>
         </ul>
     </div>
@@ -270,37 +100,34 @@
     <div class="content">
         <div id="fetch-orders" class="section">
             <h2>Fetch Orders</h2>
-            <button class="btn btn-primary" onclick="handleGetRequest('orders')">Fetch Orders</button>
+            <button type="button" class="btn btn-primary" onclick="handleGetRequest('orders')">Fetch Orders</button>
             <pre id="result"></pre>
         </div>
 
         <div id="create-order" class="section">
             <h2>Create Order</h2>
-            <form onsubmit="handleFormSubmit(event, 'orders')">
+            <form onsubmit="handleFormSubmit(event, 'orders');">
                 <div class="form-group">
-                    <label for="productIds">Product IDs</label>
-                    <input type="text" class="form-control" id="productIds" name="productIds" placeholder="Enter Product IDs" required>
-                </div>
-                <div class="form-group">
-                    <label for="customerId">Customer ID</label>
-                    <input type="text" class="form-control" id="customerId" name="customerId" placeholder="Enter Customer ID" required>
+                    <label for="customer">Customer ID</label>
+                    <input type="text" class="form-control" id="customer" name="customer">
                 </div>
                 <div class="form-group">
                     <label for="total">Total</label>
-                    <input type="number" class="form-control" id="total" name="total" placeholder="Enter Total" required>
+                    <input type="text" class="form-control" id="total" name="total">
                 </div>
                 <button type="submit" class="btn btn-primary">Create Order</button>
             </form>
+            <pre id="result"></pre>
         </div>
 
         <div id="chat" class="section">
             <h2>Chat to Business</h2>
             <div class="chat-box" id="chat-box">
-                <div class="chat-message bot">Hello! How can I assist you today?</div>
+                <!-- Chat messages will be appended here -->
             </div>
-            <form onsubmit="sendMessage(event)">
+            <form onsubmit="sendMessage(event);">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="chat-message" placeholder="Type your message..." required>
+                    <input type="text" class="form-control" id="chat-message" placeholder="Type your message here">
                 </div>
                 <button type="submit" class="btn btn-primary">Send</button>
             </form>
@@ -308,76 +135,123 @@
 
         <div id="create-business-profile" class="section">
             <h2>Create Business Profile</h2>
-            <form onsubmit="handleFormSubmit(event, 'profiles')">
+            <form onsubmit="handleFormSubmit(event, 'businessprofiles');">
                 <div class="form-group">
-                    <label for="profileName">Profile Name</label>
-                    <input type="text" class="form-control" id="profileName" name="name" placeholder="Enter Profile Name" required>
+                    <label for="user">User ID</label>
+                    <input type="text" class="form-control" id="user" name="user">
                 </div>
                 <div class="form-group">
-                    <label for="profileDetails">Profile Details</label>
-                    <textarea class="form-control" id="profileDetails" name="details" rows="3" placeholder="Enter Profile Details" required></textarea>
+                    <label for="business_name">Business Name</label>
+                    <input type="text" class="form-control" id="business_name" name="business_name">
+                </div>
+                <div class="form-group">
+                    <label for="contact_email">Contact Email</label>
+                    <input type="email" class="form-control" id="contact_email" name="contact_email">
+                </div>
+                <div class="form-group">
+                    <label for="contact_phone">Contact Phone</label>
+                    <input type="text" class="form-control" id="contact_phone" name="contact_phone">
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea class="form-control" id="address" name="address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="working_hours">Working Hours</label>
+                    <textarea class="form-control" id="working_hours" name="working_hours"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Create Profile</button>
             </form>
+            <pre id="result"></pre>
         </div>
 
         <div id="update-business-profile" class="section">
             <h2>Update Business Profile</h2>
-            <form onsubmit="handleFormSubmit(event, 'profiles/update')">
+            <form onsubmit="handleFormSubmit(event, 'businessprofiles');">
                 <div class="form-group">
-                    <label for="updateProfileId">Profile ID</label>
-                    <input type="text" class="form-control" id="updateProfileId" name="id" placeholder="Enter Profile ID" required>
+                    <label for="profile_id">Profile ID</label>
+                    <input type="text" class="form-control" id="profile_id" name="profile_id">
                 </div>
                 <div class="form-group">
-                    <label for="updateProfileName">Profile Name</label>
-                    <input type="text" class="form-control" id="updateProfileName" name="name" placeholder="Enter Profile Name">
+                    <label for="business_name">Business Name</label>
+                    <input type="text" class="form-control" id="business_name" name="business_name">
                 </div>
                 <div class="form-group">
-                    <label for="updateProfileDetails">Profile Details</label>
-                    <textarea class="form-control" id="updateProfileDetails" name="details" rows="3" placeholder="Enter Profile Details"></textarea>
+                    <label for="contact_email">Contact Email</label>
+                    <input type="email" class="form-control" id="contact_email" name="contact_email">
+                </div>
+                <div class="form-group">
+                    <label for="contact_phone">Contact Phone</label>
+                    <input type="text" class="form-control" id="contact_phone" name="contact_phone">
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea class="form-control" id="address" name="address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="working_hours">Working Hours</label>
+                    <textarea class="form-control" id="working_hours" name="working_hours"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Update Profile</button>
             </form>
+            <pre id="result"></pre>
         </div>
 
         <div id="manage-contacts" class="section">
             <h2>Manage Contacts</h2>
-            <button class="btn btn-primary" onclick="handleGetRequest('contacts')">Fetch Contacts</button>
+            <form onsubmit="handleFormSubmit(event, 'customers');">
+                <div class="form-group">
+                    <label for="name">Customer Name</label>
+                    <input type="text" class="form-control" id="name" name="name">
+                </div>
+                <div class="form-group">
+                    <label for="language">Preferred Language</label>
+                    <input type="text" class="form-control" id="language" name="language">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Customer</button>
+            </form>
             <pre id="result"></pre>
         </div>
 
-        <div id="manage-invoices" class="section">
-            <h2>Manage Invoices</h2>
-            <button class="btn btn-primary" onclick="handleGetRequest('invoices')">Fetch Invoices</button>
+        <div id="add-media" class="section">
+            <h2>Add Media</h2>
+            <form onsubmit="handleFormSubmit(event, 'messages');">
+                <div class="form-group">
+                    <label for="media_url">Media URL</label>
+                    <input type="text" class="form-control" id="media_url" name="media_url">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Media</button>
+            </form>
             <pre id="result"></pre>
         </div>
 
-        <div id="manage-payments" class="section">
-            <h2>Manage Payments</h2>
-            <button class="btn btn-primary" onclick="handleGetRequest('payments')">Fetch Payments</button>
-            <pre id="result"></pre>
+        <div id="notifications" class="section">
+            <h2>Notifications</h2>
+            <p>Manage notifications here.</p>
         </div>
 
-        <div id="get-query" class="section">
-            <h2>Get Query</h2>
-            <div class="form-group">
-                <label for="query">Enter your query:</label>
-                <input type="text" class="form-control" id="query" placeholder="Type your query here">
-            </div>
-            <button class="btn btn-primary" onclick="sendQueryToAI()">Send Query</button>
-            <pre id="ai-response"></pre>
+        <div id="user-preferences" class="section">
+            <h2>User Preferences</h2>
+            <p>Set your preferences here.</p>
         </div>
     </div>
 
-    <div id="settings-panel" class="settings-panel">
-        <h2>Settings</h2>
+    <div id="settings-panel" class="settings-panel" style="display: none;">
+        <h5>Settings</h5>
         <button class="btn btn-secondary" onclick="toggleSettings()">Close</button>
-        <!-- Add settings options here -->
     </div>
-
-    <!-- Bootstrap and jQuery JS -->
+    
+    <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
