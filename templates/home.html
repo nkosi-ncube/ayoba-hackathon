@@ -320,6 +320,28 @@
 
     customersSection.appendChild(customersList);
 }
+
+async function fetchAndDisplayOrders() {
+    const orders = await fetchData('orders');
+    const ordersSection = document.getElementById('orders-section');
+    const ordersList = document.createElement('ul');
+    ordersList.className = 'list-group';
+
+    orders.forEach(order => {
+        const listItem = document.createElement('li');
+        listItem.className = 'list-group-item';
+        listItem.innerHTML = `
+            <h5>Order ID: ${order.id}</h5>
+            <p>Total: $${order.total}</p>
+            <p>Product IDs: ${order.productIds.join(', ')}</p>
+            <p>Customer ID: ${order.customerId}</p>
+        `;
+        ordersList.appendChild(listItem);
+    });
+
+    ordersSection.appendChild(ordersList);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
             // Show default section
             showSection('chat-section');
@@ -327,6 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fetchBusinessProfile();
 
             fetchAndDisplayCustomers();
+            fetchAndDisplayOrders();
 
         });
 
