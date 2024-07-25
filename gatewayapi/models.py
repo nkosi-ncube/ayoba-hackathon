@@ -42,7 +42,11 @@ class Customer(models.Model):
     def __str__(self):
         return self.name
     
+class Testing(models.Model):
+    name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
 class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)

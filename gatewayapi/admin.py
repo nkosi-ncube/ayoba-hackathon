@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from django.contrib import admin
-from .models import Product, Customer, Order, Invoice, Payment, Query, Admin,BusinessProfile
+from .models import Product, Customer, Order, Invoice, Payment, Query, Admin,BusinessProfile,Testing
 from django.utils.html import format_html
 
 @admin.register(Invoice)
@@ -25,6 +25,9 @@ class CustomerAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'language')
     search_fields = ('name',)
 
+@admin.register(Testing)
+class TestingAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'customer', 'total')
