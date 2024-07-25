@@ -346,14 +346,71 @@ async function fetchAndDisplayOrders() {
     ordersSection.appendChild(ordersList);
 }
 
+async function fetchAndDisplayProducts() {
+    const products = await handleGetRequest('products');
+    const productsSection = document.getElementById('products-section');
+    const productsList = document.createElement('ul');
+    productsList.className = 'list-group';
+
+    products.forEach(product => {
+        const listItem = document.createElement('li');
+        listItem.className = 'list-group-item';
+        listItem.innerHTML = `
+            <h5>${product.name}</h5>
+            <p>Price: $${product.price}</p>
+        `;
+        productsList.appendChild(listItem);
+    });
+}
+
+async function fetchAndDisplayInvoices() {
+    const invoices = await handleGetRequest('invoices');
+    const invoicesSection = document.getElementById('invoices-section');
+    const invoicesList = document.createElement('ul');
+    invoicesList.className = 'list-group';
+
+    invoices.forEach(invoice => {
+        const listItem = document.createElement('li');
+        listItem.className = 'list-group-item';
+        listItem.innerHTML = `
+            <h5>Order ID: ${invoice.order}</h5>
+            <p>Status: ${invoice.status}</p>
+        `;
+        invoicesList.appendChild(listItem);
+    });
+    invoicesSection.appendChild(invoicesList);
+}
+
+async function fetchAndDisplayPayments(){
+    const payments = await handleGetRequest('payments');
+    const paymentsSection = document.getElementById('payments-section');
+    const paymentsList = document.createElement('ul');
+    paymentsList.className = 'list-group';
+
+    payments.forEach(payment => {
+        const listItem = document.createElement('li');
+        listItem.className = 'list-group-item';
+        listItem.innerHTML = `
+            <h5>Order ID: ${payment.order}</h5>
+            <p>Status: ${payment.status}</p>
+        `;
+        paymentsList.appendChild(listItem);
+    });
+    paymentsSection.appendChild(paymentsList);
+
+}
+
 document.addEventListener('DOMContentLoaded', () => {
             // Show default section
             showSection('chat-section');
             
             fetchBusinessProfile();
 
-            fetchAndDisplayCustomers();
+            fetchAndDisplayProducts();
             fetchAndDisplayOrders();
+            fetchAndDisplayInvoices()
+            fetchAndDisplayPayments();
+            fetchAndDisplayCustomers();
 
         });
 
