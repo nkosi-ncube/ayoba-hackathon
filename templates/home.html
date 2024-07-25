@@ -13,12 +13,13 @@
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
             color: #333;
-            margin: 0;
+            margin:0;
             padding: 0;
         }
         .navbar {
             background-color: #0056b3;
             padding: 10px 15px;
+            margin-left: 300px;
         }
         .navbar-brand {
             color: #fff !important;
@@ -41,22 +42,52 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 250px;
+            width: 300px; /* Increased width for better icon visibility */
             padding-top: 20px;
-            padding-left: 20px;
+            padding-left: 10px;
             padding-right: 10px;
+            overflow: auto;
         }
         .sidebar .nav-link {
             color: #fff;
+            text-align: center;
+            display: block;
+            margin-bottom: 20px;
         }
         .sidebar .nav-link:hover {
             color: #e0e0e0;
         }
+        .sidebar .nav-link i {
+            font-size: 24px; /* Adjusted icon size */
+        }
+        .sidebar .nav-link span {
+            display: block;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .sidebar .profile-section {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .sidebar .profile-section img {
+            border-radius: 50%;
+            height: 80px;
+            width: 80px;
+            margin-bottom: 10px;
+        }
+        .sidebar .profile-section .profile-info {
+            color: #fff;
+            text-align: center;
+        }
+        .sidebar .profile-section .profile-info h3 {
+            margin: 0;
+            font-size: 16px;
+        }
         .content {
-            margin-left: 250px;
+            margin-left:300px; /* Adjusted for new sidebar width */
             padding: 20px;
         }
-        .chat-box {
+        .chat-box, .query-box {
             border: 1px solid #ddd;
             border-radius: 8px;
             background: #fff;
@@ -65,17 +96,19 @@
             overflow-y: scroll;
         }
         .chat-message {
-            background: #e9f7fc;
             border-radius: 5px;
             padding: 10px;
             margin: 5px 0;
+            max-width: 60%;
+            clear: both;
         }
         .chat-message.bot {
             background: #e9f7fc;
+            float: left;
         }
         .chat-message.user {
             background: #d1ecf1;
-            text-align: right;
+            float: right;
         }
         .form-control {
             border-radius: 0;
@@ -130,17 +163,25 @@
         }
         .profile-section {
             display: flex;
+            flex-direction: column;
             align-items: center;
             margin-bottom: 10px;
         }
         .profile-section img {
             border-radius: 50%;
-            height: 50px;
-            width: 50px;
-            margin-right: 10px;
+            height: 80px;
+            width: 80px;
+            margin-bottom: 10px;
         }
         .profile-section .profile-info {
             color: #fff;
+            text-align: center;
+        }
+        .sidebar .nav-item {
+            margin-bottom: 20px;
+        }
+        .section {
+            display: none;
         }
     </style>
     <script>
@@ -181,6 +222,10 @@
                 });
                 const result = await response.json();
                 document.getElementById('ai-response').innerText = JSON.stringify(result, null, 2);
+                const chatBox = document.querySelector('#query-box');
+                chatBox.innerHTML += `<div class="chat-message user">${query}</div>`;
+                chatBox.innerHTML += `<div class="chat-message bot">${result.response}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
             } catch (error) {
                 document.getElementById('ai-response').innerText = `Error: ${error.message}`;
             }
@@ -214,7 +259,7 @@
 <body>
     <nav class="navbar navbar-expand-lg">
         <a class="navbar-brand" href="#">
-            <img src="https://via.placeholder.com/40" alt="Ayoba Logo"> Ayoba Business
+            <img src="https://mir-s3-cdn-cf.behance.net/projects/404/6bd70c141997923.Y3JvcCwxMTgwLDkyMywzNjUsNzg.png" alt="Ayoba Logo"> Ayoba Business
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -230,39 +275,36 @@
 
     <div class="sidebar">
         <div class="profile-section">
-            <img src="https://via.placeholder.com/50" alt="Profile Picture">
+            <img src="data:image/jpeg;base64,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 alt="Profile Picture">
             <div class="profile-info">
-                <h5>User Name</h5>
-                <p>Business Owner</p>
+                <!-- <p>Username: <strong>JohnDoe</strong></p> -->
+                <h3>Ayoba Designs</h3>
             </div>
         </div>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('fetch-orders')">Fetch Orders</a>
+                <a class="nav-link" href="#" onclick="showSection('fetch-orders')"><i class="fas fa-box"></i><span>Orders</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('create-order')">Create Order</a>
+                <a class="nav-link" href="#" onclick="showSection('fetch-customers')"><i class="fas fa-users"></i><span>Customers</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('chat')">Chat to Business</a>
+                <a class="nav-link" href="#" onclick="showSection('fetch-products')"><i class="fas fa-cube"></i><span>Products</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('create-business-profile')">Create Business Profile</a>
+                <a class="nav-link" href="#" onclick="showSection('fetch-invoices')"><i class="fas fa-file-invoice"></i><span>Invoices</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('update-business-profile')">Update Business Profile</a>
+                <a class="nav-link" href="#" onclick="showSection('fetch-payments')"><i class="fas fa-credit-card"></i><span>Payments</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('manage-contacts')">Manage Contacts</a>
+                <a class="nav-link" href="#" onclick="showSection('fetch-catalogue')"><i class="fas fa-list"></i><span>Catalogue</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('manage-invoices')">Manage Invoices</a>
+                <a class="nav-link" href="#" onclick="showSection('chat')"><i class="fas fa-comment-dots"></i><span>Chat</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('manage-payments')">Manage Payments</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="showSection('get-query')">Get Query</a>
+                <a class="nav-link" href="#" onclick="showSection('query-chat')"><i class="fas fa-question-circle"></i><span>AI Query Chat</span></a>
             </li>
         </ul>
     </div>
@@ -278,106 +320,87 @@
             <h2>Create Order</h2>
             <form onsubmit="handleFormSubmit(event, 'orders')">
                 <div class="form-group">
-                    <label for="productIds">Product IDs</label>
-                    <input type="text" class="form-control" id="productIds" name="productIds" placeholder="Enter Product IDs" required>
+                    <label for="productIds">Product IDs:</label>
+                    <input type="text" class="form-control" id="productIds" name="productIds">
                 </div>
                 <div class="form-group">
-                    <label for="customerId">Customer ID</label>
-                    <input type="text" class="form-control" id="customerId" name="customerId" placeholder="Enter Customer ID" required>
+                    <label for="customerId">Customer ID:</label>
+                    <input type="text" class="form-control" id="customerId" name="customerId">
                 </div>
                 <div class="form-group">
-                    <label for="total">Total</label>
-                    <input type="number" class="form-control" id="total" name="total" placeholder="Enter Total" required>
+                    <label for="total">Total:</label>
+                    <input type="number" class="form-control" id="total" name="total">
                 </div>
                 <button type="submit" class="btn btn-primary">Create Order</button>
             </form>
         </div>
 
+        <div id="fetch-customers" class="section">
+            <h2>Fetch Customers</h2>
+            <button class="btn btn-primary" onclick="handleGetRequest('customers')">Fetch Customers</button>
+            <pre id="result"></pre>
+        </div>
+
+        <div id="fetch-products" class="section">
+            <h2>Fetch Products</h2>
+            <button class="btn btn-primary" onclick="handleGetRequest('products')">Fetch Products</button>
+            <pre id="result"></pre>
+        </div>
+
+        <div id="fetch-invoices" class="section">
+            <h2>Fetch Invoices</h2>
+            <button class="btn btn-primary" onclick="handleGetRequest('invoices')">Fetch Invoices</button>
+            <pre id="result"></pre>
+        </div>
+
+        <div id="fetch-payments" class="section">
+            <h2>Fetch Payments</h2>
+            <button class="btn btn-primary" onclick="handleGetRequest('payments')">Fetch Payments</button>
+            <pre id="result"></pre>
+        </div>
+
+        <div id="fetch-catalogue" class="section">
+            <h2>Fetch Catalogue</h2>
+            <button class="btn btn-primary" onclick="handleGetRequest('catalogue')">Fetch Catalogue</button>
+            <pre id="result"></pre>
+        </div>
+
         <div id="chat" class="section">
-            <h2>Chat to Business</h2>
+            <h2>Chat</h2>
             <div class="chat-box" id="chat-box">
                 <div class="chat-message bot">Hello! How can I assist you today?</div>
             </div>
             <form onsubmit="sendMessage(event)">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="chat-message" placeholder="Type your message..." required>
+                    <input type="text" class="form-control" id="chat-message" placeholder="Type a message...">
                 </div>
                 <button type="submit" class="btn btn-primary">Send</button>
             </form>
         </div>
 
-        <div id="create-business-profile" class="section">
-            <h2>Create Business Profile</h2>
-            <form onsubmit="handleFormSubmit(event, 'profiles')">
-                <div class="form-group">
-                    <label for="profileName">Profile Name</label>
-                    <input type="text" class="form-control" id="profileName" name="name" placeholder="Enter Profile Name" required>
-                </div>
-                <div class="form-group">
-                    <label for="profileDetails">Profile Details</label>
-                    <textarea class="form-control" id="profileDetails" name="details" rows="3" placeholder="Enter Profile Details" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Create Profile</button>
-            </form>
-        </div>
-
-        <div id="update-business-profile" class="section">
-            <h2>Update Business Profile</h2>
-            <form onsubmit="handleFormSubmit(event, 'profiles/update')">
-                <div class="form-group">
-                    <label for="updateProfileId">Profile ID</label>
-                    <input type="text" class="form-control" id="updateProfileId" name="id" placeholder="Enter Profile ID" required>
-                </div>
-                <div class="form-group">
-                    <label for="updateProfileName">Profile Name</label>
-                    <input type="text" class="form-control" id="updateProfileName" name="name" placeholder="Enter Profile Name">
-                </div>
-                <div class="form-group">
-                    <label for="updateProfileDetails">Profile Details</label>
-                    <textarea class="form-control" id="updateProfileDetails" name="details" rows="3" placeholder="Enter Profile Details"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Update Profile</button>
-            </form>
-        </div>
-
-        <div id="manage-contacts" class="section">
-            <h2>Manage Contacts</h2>
-            <button class="btn btn-primary" onclick="handleGetRequest('contacts')">Fetch Contacts</button>
-            <pre id="result"></pre>
-        </div>
-
-        <div id="manage-invoices" class="section">
-            <h2>Manage Invoices</h2>
-            <button class="btn btn-primary" onclick="handleGetRequest('invoices')">Fetch Invoices</button>
-            <pre id="result"></pre>
-        </div>
-
-        <div id="manage-payments" class="section">
-            <h2>Manage Payments</h2>
-            <button class="btn btn-primary" onclick="handleGetRequest('payments')">Fetch Payments</button>
-            <pre id="result"></pre>
-        </div>
-
-        <div id="get-query" class="section">
-            <h2>Get Query</h2>
-            <div class="form-group">
-                <label for="query">Enter your query:</label>
-                <input type="text" class="form-control" id="query" placeholder="Type your query here">
+        <div id="query-chat" class="section">
+            <h2>AI Query Chat</h2>
+            <div class="query-box" id="query-box">
+                <div class="chat-message bot">Ask me anything about our services!</div>
             </div>
-            <button class="btn btn-primary" onclick="sendQueryToAI()">Send Query</button>
+            <form onsubmit="sendQueryToAI(); return false;">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="query" placeholder="Type your query...">
+                </div>
+                <button type="submit" class="btn btn-primary">Send Query</button>
+            </form>
             <pre id="ai-response"></pre>
         </div>
+
+        <div id="settings-panel" class="settings-panel">
+            <h2>Settings</h2>
+            <button class="btn btn-secondary" onclick="toggleSettings()">Close</button>
+        </div>
     </div>
 
-    <div id="settings-panel" class="settings-panel">
-        <h2>Settings</h2>
-        <button class="btn btn-secondary" onclick="toggleSettings()">Close</button>
-        <!-- Add settings options here -->
-    </div>
-
-    <!-- Bootstrap and jQuery JS -->
+    <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
