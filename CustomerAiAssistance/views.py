@@ -5,14 +5,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import QuerySerializer
 from .utils import generate_normal_response
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
-@csrf_exempt
+@method_decorator(csrf_exempt, name='dispatch')
 class QueryAPIView(APIView):
     def post(self, request):
         serializer = QuerySerializer(data=request.data)
         if serializer.is_valid():
             query = serializer.validated_data['query']
+            # Call the generate_normal_response function to get the AI's response
             ai_response = generate_normal_response(query)
             response_data = {
                 "response": ai_response
