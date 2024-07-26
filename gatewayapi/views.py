@@ -106,6 +106,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
+        print("A get request was sent: "  , request.data)
         # Retrieving messages sent from Ayoba users
         url = f"https://api.ayoba.me/v1/business/message"
         headers = {

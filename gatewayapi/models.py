@@ -7,8 +7,8 @@ from django.urls import reverse
 
 class Message(models.Model):
     msisdn = models.CharField(max_length=15)  # Phone number
-    message_id = models.CharField(max_length=100)  # Unique message ID
-    from_jid = models.CharField(max_length=100)  # From JID
+    message_id = models.CharField(max_length=100,null=True, blank=True)  # Unique message ID
+    from_jid = models.CharField(max_length=100,null=True, blank=True)  # From JID
     message_type = models.CharField(max_length=50)  # Type of message
     text = models.TextField(null=True, blank=True)  # Text of the message
     url = models.URLField(null=True, blank=True)  # URL of the media (if any)
