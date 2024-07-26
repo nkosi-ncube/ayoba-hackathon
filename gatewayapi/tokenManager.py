@@ -16,7 +16,7 @@ class AyobaTokenManager:
         self.refresh_token()
 
     def refresh_token(self):
-        def login_to_ayoba(self):
+        def login_to_ayoba():
             url = "https://api.ayoba.me/v2/login"
             print(f"Attempting login with username: {self.username}")
             payload = {
