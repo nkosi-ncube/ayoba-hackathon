@@ -4,11 +4,11 @@ from rest_framework.decorators import api_view
 from .models import Product, Customer, Order, Invoice, Payment, Query, Admin,OrderItem,BusinessProfile,Message,Testing
 from .serializers import ProductSerializer, CustomerSerializer, OrderSerializer, InvoiceSerializer, PaymentSerializer, QuerySerializer, AdminSerializer,OrderItemSerializer,BusinessProfileSerializer,MessageSerializer,TestingSerializer
 from django.views.decorators.csrf import csrf_exempt
-from .services import send_message, send_file_message, get_media_slots, get_avatar_slot
+from .services import send_message, send_file_message, get_media_slots, get_avatar_slot,get_message
 from django.conf import settings
 from django.shortcuts import render
 import requests
-
+import time
 
 # jwt_token = login_to_ayoba(username, password)
 # jwt_token = login_to_ayoba(username, password)
@@ -76,13 +76,16 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         # Assuming that the request data contains msisdns, message_type, and message_text
-        msisdns = request.data.get('msisdns', ["+27648917936"])
-        message_type = request.data.get('message_type', 'text')
-        message_text = request.data.get('message_text', 'Hie Njabulo , am testing from the interface')
+        msisdns =  ["+27648917936"]
+        message_type =  'text'
+        message_text =  'Hie Njabulo  am testing from the interface'
 
         if message_type == 'text':
             response = send_message(msisdns, message_type, message_text)
             print("This is the response that came through: " ,response)
+
+            time.sleep(5)
+            response = get_message(msisdns, message_type, message_text)
         elif message_type == 'file':
             file_url = request.data.get('file_url', '')
             response = send_file_message(msisdns, file_url)
