@@ -50,3 +50,4 @@ class AyobaTokenManager:
 
 # Create a singleton instance of AyobaTokenManager
 token_manager = AyobaTokenManager()
+print("Manaager: ", token_manager)
