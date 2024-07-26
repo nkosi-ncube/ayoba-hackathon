@@ -165,18 +165,32 @@ async function sendMessage(event) {
     }
 }
 
-async function fetchMessages(){
-    const response = await fetch('https://api.ayoba.me/v1/business/message');
-    const result = await response.json();
+async function fetchMessages() {
+    try {
+        const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/messages/', {
+            method: 'GET',
+          
+        });
 
-    if (result.length > 0) {
-        const messages = result;
-        console.log("Messages", messages);
-        return messages[-1].message;
-    } else {
-        return "No messages found";
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.length > 0) {
+            const messages = result;
+            console.log("Messages", messages);
+            return messages[messages.length - 1].message;
+        } else {
+            return "No messages found";
+        }
+    } catch (error) {
+        console.error("Error fetching messages:", error);
+        return "Error fetching messages";
     }
 }
+
 async function toggleSettings() {
     const settingsPanel = document.querySelector('#settings-panel');
     settingsPanel.classList.toggle('active');
