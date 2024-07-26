@@ -16,9 +16,9 @@ class AyobaTokenManager:
         self.refresh_token()
 
     def refresh_token(self):
-        def login_to_ayoba():
+        def login_to_ayoba(self):
             url = "https://api.ayoba.me/v2/login"
-            print(self.username, self.password)
+            print(f"Attempting login with username: {self.username}")
             payload = {
                 "username": self.username,
                 "password": self.password
@@ -28,14 +28,20 @@ class AyobaTokenManager:
             }
             try:
                 response = requests.post(url, headers=headers, json=payload)
+                print(f"Response status code: {response.status_code}")
+                print(f"Response content: {response.text}")
                 response.raise_for_status()
-                return response.json().get('token')  # Adjust according to the actual response structure
+                token = response.json().get('token')
+                print(f"Token received: {token}")
+                return token
             except requests.exceptions.HTTPError as http_err:
                 print(f"HTTP error occurred: {http_err}")
                 return None
             except Exception as err:
                 print(f"Other error occurred: {err}")
                 return None
+
+        print("Login successful")
 
         with self.token_lock:
             self.token = login_to_ayoba()
