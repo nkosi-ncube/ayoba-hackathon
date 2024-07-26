@@ -85,7 +85,7 @@ async function handleGetRequest(endpoint) {
         console.log("Result", result);
         return result; // Return the result for further processing
     } catch (error) {
-        document.getElementById('result').innerText = `Error: ${error.message}`;
+       console.log("Error", error);
         return []; // Return an empty array in case of an error
     }
 }
