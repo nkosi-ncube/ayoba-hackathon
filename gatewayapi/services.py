@@ -26,7 +26,7 @@ def send_message(msisdns, message_type, message_text):
     return response.json()
 
 def send_file_message(msisdns, file_url):
-    url = f"{.AYOBA_API_URL}/v1/business/message/file"
+    url = f"{AYOBA_API_URL}/v1/business/message/file"
     headers = {
         'Authorization': f'Bearer {settings.AYOBA_API_KEY}',
         'Content-Type': 'application/json',
