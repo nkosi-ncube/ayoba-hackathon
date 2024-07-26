@@ -41,11 +41,13 @@ class AyobaTokenManager:
                 print(f"Other error occurred: {err}")
                 return None
 
-        print("Login successful")
-
         with self.token_lock:
-            self.token = login_to_ayoba()
-            print(f"New token: {self.token}")
+            new_token = login_to_ayoba()
+            if new_token:
+                self.token = new_token
+                print(f"New token: {self.token}")
+            else:
+                print("Failed to get a new token")
 
         # Schedule the next token refresh
         threading.Timer(1800, self.refresh_token).start()  # Refresh every 30 minutes
@@ -56,4 +58,5 @@ class AyobaTokenManager:
 
 # Create a singleton instance of AyobaTokenManager
 token_manager = AyobaTokenManager()
-print("Manaager: ", token_manager)
+print("Token Manager instance created:", token_manager)
+print("Initial token:", token_manager.get_token())
