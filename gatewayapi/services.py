@@ -1,5 +1,6 @@
 import requests
 from django.conf import settings
+from .models import Message
 
 access_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IjliNTIwMGU1M2JjMGU2NDczYzllMzIyZDMwYjA2Yjk0MjZmYzEyY2IiLCJqaWQiOiI5YjUyMDBlNTNiYzBlNjQ3M2M5ZTMyMmQzMGIwNmI5NDI2ZmMxMmNiQGF5b2JhLm1lIiwiZ3JvdXAiOiJidXNpbmVzcyIsIm1zaXNkbiI6bnVsbCwiaWF0IjoxNzIyMDA5OTY0LCJleHAiOjE3MjIwMTE3NjR9.gtuTStDNNpWFec82tXpeVxG66kZeX-2j523MwLpXsis"
 AYOBA_API_URL="https://api.ayoba.me"
@@ -24,10 +25,8 @@ def send_message(msisdns, message_type, message_text):
     except Exception as err:
         return {"error": f"Other error occurred: {err}"}
     return response.json()
-
-import requests
-from myapp.models import Message  # Import the Message model from your app
-from django.conf import settings  # Make sure to import settings if needed
+  # Import the Message model from your app
+ # Make sure to import settings if needed
 
 def get_message(msisdns, message_type, message_text):
     url = f"{AYOBA_API_URL}/v1/business/message"
