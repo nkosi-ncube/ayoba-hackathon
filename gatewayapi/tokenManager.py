@@ -31,7 +31,7 @@ class AyobaTokenManager:
                 print(f"Response status code: {response.status_code}")
                 print(f"Response content: {response.text}")
                 response.raise_for_status()
-                token = response.json().get('token')
+                token = response.json().get('access_token')
                 print(f"Token received: {token}")
                 return token
             except requests.exceptions.HTTPError as http_err:
