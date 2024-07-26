@@ -22,7 +22,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     get_payment_status.short_description = 'Payment Status'
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'price')
+    list_display = ('id', 'name', 'price','image_url')
     search_fields = ('name',)
 
 @admin.register(Customer)

@@ -250,8 +250,16 @@ async function fetchAndDisplayProducts() {
         const listItem = document.createElement('li');
         listItem.className = 'list-group-item';
         listItem.innerHTML = `
-            <h5>Product Name: ${product.name}</h5>
-            <p>Price: R${product.price}</p>
+            <div class="product-item">
+                <img src="${product.image_url}" alt="${product.name}" class="product-image">
+                <div class="product-details">
+                    <h5>${product.name}</h5>
+                    <p>Price: R${product.price}</p>
+                </div>
+                <button class="btn btn-primary add-to-cart" onclick="addToCart(${product.id})">
+                    <i class="fa fa-shopping-cart"></i> Add to Cart
+                </button>
+            </div>
         `;
         productsList.appendChild(listItem);
     });
@@ -259,6 +267,11 @@ async function fetchAndDisplayProducts() {
     productsSection.appendChild(productsList);
 }
 
+// Function to handle Add to Cart action
+function addToCart(productId) {
+    console.log(`Product ${productId} added to cart`);
+    // Implement your Add to Cart logic here
+}
 
 async function fetchAndDisplayInvoices() {
     const invoices = await handleGetRequest('invoices');
