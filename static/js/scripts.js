@@ -108,7 +108,7 @@ async function sendQueryToAI() {
             body: JSON.stringify({ query: query })
         });
         const result = await response.json();
-        document.getElementById('ai-response').innerText = JSON.stringify(result, null, 2);
+        // document.getElementById('ai-response').innerText = JSON.stringify(result, null, 2);
         const chatBox = document.querySelector('#query-box');
         chatBox.innerHTML += `<div class="chat-message user">${query}</div>`;
         chatBox.innerHTML += `<div class="chat-message bot">${result.response}</div>`;
