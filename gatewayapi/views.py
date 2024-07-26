@@ -76,9 +76,9 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         # Assuming that the request data contains msisdns, message_type, and message_text
-        msisdns = request.data.get('msisdns', [])
+        msisdns = request.data.get('msisdns', ["+27648917936"])
         message_type = request.data.get('message_type', 'text')
-        message_text = request.data.get('message_text', '')
+        message_text = request.data.get('message_text', 'Hie Njabulo , am testing from the interface')
 
         if message_type == 'text':
             response = send_message(msisdns, message_type, message_text)
