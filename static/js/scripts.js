@@ -155,6 +155,11 @@ async function sendMessage(event) {
         let response_message = fetchMessages();
 
         console.log("Response message", response_message);
+        if (response_message.length > 0) {
+            response_message = response_message[-1].message
+        }else{
+            response_message = "No messages found"
+        }
 
         setTimeout(() => {
             chatBox.innerHTML += `<div class="chat-message bot">${response_message}</div>`;
