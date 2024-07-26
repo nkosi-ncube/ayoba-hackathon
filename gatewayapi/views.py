@@ -84,8 +84,8 @@ class MessageViewSet(viewsets.ModelViewSet):
             response = send_message(msisdns, message_type, message_text)
             print("This is the response that came through: " ,response)
 
-            time.sleep(5)
-            response = get_message(msisdns, message_type, message_text)
+            # time.sleep(5)
+            # response = get_message(msisdns, message_type, message_text)
         elif message_type == 'file':
             file_url = request.data.get('file_url', '')
             response = send_file_message(msisdns, file_url)
