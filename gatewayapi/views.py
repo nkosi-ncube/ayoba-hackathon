@@ -9,10 +9,10 @@ from django.conf import settings
 from django.shortcuts import render
 import requests
 import time
-
+from .tokenManager import token_manager
 # jwt_token = login_to_ayoba(username, password)
 # jwt_token = login_to_ayoba(username, password)
-access_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IjliNTIwMGU1M2JjMGU2NDczYzllMzIyZDMwYjA2Yjk0MjZmYzEyY2IiLCJqaWQiOiI5YjUyMDBlNTNiYzBlNjQ3M2M5ZTMyMmQzMGIwNmI5NDI2ZmMxMmNiQGF5b2JhLm1lIiwiZ3JvdXAiOiJidXNpbmVzcyIsIm1zaXNkbiI6bnVsbCwiaWF0IjoxNzIyMDIwODMyLCJleHAiOjE3MjIwMjI2MzJ9.IVX3bCGGGIxQ-LRh-gZxyDJjWFF_e9odl9YW47YT2Kk"
+access_token= token = token_manager.get_token()
 
 def home(request):
     return render(request, 'home.html')
