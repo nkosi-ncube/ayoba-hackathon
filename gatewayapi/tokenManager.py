@@ -6,6 +6,11 @@ class AyobaTokenManager:
     def __init__(self):
         self.username = os.getenv('AYOBA_USERNAME')
         self.password = os.getenv('AYOBA_PASSWORD')
+        
+        # Debugging: print environment variables to check if they are being read correctly
+        print(f"AYOBA_USERNAME: {self.username}")
+        print(f"AYOBA_PASSWORD: {self.password}")
+        
         self.token = None
         self.token_lock = threading.Lock()
         self.refresh_token()
@@ -13,7 +18,7 @@ class AyobaTokenManager:
     def refresh_token(self):
         def login_to_ayoba():
             url = "https://api.ayoba.me/v2/login"
-            print(self.username , self.password)
+            print(self.username, self.password)
             payload = {
                 "username": self.username,
                 "password": self.password
