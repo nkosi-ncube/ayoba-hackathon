@@ -133,6 +133,12 @@ async function sendMessage(event) {
     // Simulate bot response
     response_message = await handleGetRequest('messages/');
     console.log("Response message", response_message);
+
+    if (response_message.length > 0) {
+        response_message = response_message[response_message.length-1].message
+    }else{
+        response_message = "Customer has not responded yet."
+    }
     // response_message = "this is a palceholder response from the business"
     setTimeout(() => {
         chatBox.innerHTML += `<div class="chat-message bot">${response_message}</div>`;
