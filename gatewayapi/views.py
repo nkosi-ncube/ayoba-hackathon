@@ -9,6 +9,11 @@ from django.conf import settings
 from django.shortcuts import render
 import requests
 
+
+# jwt_token = login_to_ayoba(username, password)
+# jwt_token = login_to_ayoba(username, password)
+access_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IjliNTIwMGU1M2JjMGU2NDczYzllMzIyZDMwYjA2Yjk0MjZmYzEyY2IiLCJqaWQiOiI5YjUyMDBlNTNiYzBlNjQ3M2M5ZTMyMmQzMGIwNmI5NDI2ZmMxMmNiQGF5b2JhLm1lIiwiZ3JvdXAiOiJidXNpbmVzcyIsIm1zaXNkbiI6bnVsbCwiaWF0IjoxNzIxOTk2MjQ3LCJleHAiOjE3MjE5OTgwNDd9.v0Xf8xwEZN51_RuI3NBkzqADRRMID-8LuXUT5RiIxf0"
+
 def home(request):
     return render(request, 'home.html')
 # Function-based views
@@ -93,9 +98,9 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         # Retrieving messages sent from Ayoba users
-        url = f"{settings.AYOBA_API_URL}/v1/business/message"
+        url = f"https://api.ayoba.me/v1/business/message"
         headers = {
-            'Authorization': f'Bearer {settings.AYOBA_API_KEY}',
+            'Authorization': f'Bearer {access_token}',
         }
         try:
             response = requests.get(url, headers=headers)

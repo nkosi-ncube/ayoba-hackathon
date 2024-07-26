@@ -1,10 +1,12 @@
 import requests
 from django.conf import settings
 
+access_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IjliNTIwMGU1M2JjMGU2NDczYzllMzIyZDMwYjA2Yjk0MjZmYzEyY2IiLCJqaWQiOiI5YjUyMDBlNTNiYzBlNjQ3M2M5ZTMyMmQzMGIwNmI5NDI2ZmMxMmNiQGF5b2JhLm1lIiwiZ3JvdXAiOiJidXNpbmVzcyIsIm1zaXNkbiI6bnVsbCwiaWF0IjoxNzIxOTk2MjQ3LCJleHAiOjE3MjE5OTgwNDd9.v0Xf8xwEZN51_RuI3NBkzqADRRMID-8LuXUT5RiIxf0"
+AYOBA_API_URL="https://api.ayoba.me"
 def send_message(msisdns, message_type, message_text):
-    url = f"{settings.AYOBA_API_URL}/v1/business/message"
+    url = f"{AYOBA_API_URL}/v1/business/message"
     headers = {
-        'Authorization': f'Bearer {settings.AYOBA_API_KEY}',
+        'Authorization': f'Bearer {access_token}',
         'Content-Type': 'application/json',
     }
     payload = {
@@ -24,7 +26,7 @@ def send_message(msisdns, message_type, message_text):
     return response.json()
 
 def send_file_message(msisdns, file_url):
-    url = f"{settings.AYOBA_API_URL}/v1/business/message/file"
+    url = f"{.AYOBA_API_URL}/v1/business/message/file"
     headers = {
         'Authorization': f'Bearer {settings.AYOBA_API_KEY}',
         'Content-Type': 'application/json',
@@ -43,7 +45,7 @@ def send_file_message(msisdns, file_url):
     return response.json()
 
 def get_media_slots():
-    url = f"{settings.AYOBA_API_URL}/v1/business/message/media/get-slots"
+    url = f"{AYOBA_API_URL}/v1/business/message/media/get-slots"
     headers = {
         'Authorization': f'Bearer {settings.AYOBA_API_KEY}',
     }
@@ -57,7 +59,7 @@ def get_media_slots():
     return response.json()
 
 def get_avatar_slot():
-    url = f"{settings.AYOBA_API_URL}/v1/business/avatar/get-slot"
+    url = f"{AYOBA_API_URL}/v1/business/avatar/get-slot"
     headers = {
         'Authorization': f'Bearer {settings.AYOBA_API_KEY}',
     }

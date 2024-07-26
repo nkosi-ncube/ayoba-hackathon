@@ -150,5 +150,5 @@ APPEND_SLASH = False
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Ayoba API settings
-AYOBA_API_URL = 'https://api.ayoba.com'
+AYOBA_API_URL = 'https://api.ayoba.com/api/v1/'
 AYOBA_API_KEY = 'your_api_key_here'
