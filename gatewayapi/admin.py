@@ -8,7 +8,7 @@ from django.utils.html import format_html
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):   
-    list_display = ('id', 'message','msg_type','msisdns','created_at')
+    list_display = ('id', 'text','msg_type','msisdns','created_at')
 
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
