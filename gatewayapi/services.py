@@ -57,7 +57,7 @@ def get_message(msisdns, message_type, message_text):
     if response_data:
         for message_data in response_data:
             msisdn = message_data.get('msisdn')
-            message_id = message_data['messageId']
+            message_id = message_data.get('messageId')
             message_info = message_data.get('message', {})
             from_jid = message_info.get('fromJid', '')
             message_type = message_info.get('type', '')
