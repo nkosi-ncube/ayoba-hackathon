@@ -2,8 +2,13 @@ from django.contrib import admin
 
 # Register your models here.
 from django.contrib import admin
-from .models import Product, Customer, Order, Invoice, Payment, Query, Admin,BusinessProfile,Testing
+from .models import Product, Customer, Order, Invoice, Payment, Query, Admin,BusinessProfile,Testing,Message
 from django.utils.html import format_html
+
+
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):   
+    list_display = ('id', 'message','msg_type','msisdns','created_at')
 
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
