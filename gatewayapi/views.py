@@ -99,15 +99,11 @@ class MessageViewSet(viewsets.ModelViewSet):
 
         return Response(response, status=status.HTTP_201_CREATED)
 
-    def retrieve(self, request, *args, **kwargs):
-        # Fetching a message's details
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-
     def list(self, request, *args, **kwargs):
-        print("A get request was sent: "  , request.data)
-        # Retrieving messages sent from Ayoba users
+        print("GET request received")
+        # Ensure access_token is defined and valid
+        print("Access token:", access_token)
+        
         url = f"https://api.ayoba.me/v1/business/message"
         headers = {
             'Authorization': f'Bearer {access_token}',
@@ -116,11 +112,15 @@ class MessageViewSet(viewsets.ModelViewSet):
             response = requests.get(url, headers=headers)
             response.raise_for_status()
             messages = response.json()
+            print("Messages fetched:", messages)
             return Response(messages, status=status.HTTP_200_OK)
         except requests.exceptions.HTTPError as http_err:
+            print("HTTP error:", http_err)
             return Response({"error": f"HTTP error occurred: {http_err}"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as err:
+            print("Other error:", err)
             return Response({"error": f"Other error occurred: {err}"}, status=status.HTTP_400_BAD_REQUEST)
+
 # Class-based views
 class BusinessProfileViewSet(viewsets.ModelViewSet):
     queryset = BusinessProfile.objects.all()
