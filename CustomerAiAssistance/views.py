@@ -13,12 +13,9 @@ class QueryAPIView(APIView):
         serializer = QuerySerializer(data=request.data)
         if serializer.is_valid():
             query = serializer.validated_data['query']
-            # Call the generate_normal_response function to get the AI's response
             ai_response = generate_normal_response(query)
             response_data = {
                 "response": ai_response
             }
             return Response(response_data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
