@@ -222,26 +222,56 @@ async function fetchAndDisplayCustomers() {
 async function fetchAndDisplayOrders() {
     const orders = await handleGetRequest('orders');
     const ordersSection = document.getElementById('orders-section');
-    const ordersList = document.createElement('ul');
-    ordersList.className = 'list-group';
-
-    // Clear any existing content
-    ordersSection.innerHTML = '';
+    ordersSection.innerHTML = ''; // Clear any existing content
 
     orders.forEach(order => {
-        const listItem = document.createElement('li');
-        listItem.className = 'list-group-item';
-        listItem.innerHTML = `
-            <h5>Order ID: ${order.id}</h5>
-            <p>Total: R${order.total}</p>
-            <p>Product IDs: ${order.items}</p>
-            <p>Customer ID: ${order.customer}</p>
-        `;
-        ordersList.appendChild(listItem);
-    });
+        const card = document.createElement('div');
+        card.className = 'card mb-3';
 
-    ordersSection.appendChild(ordersList);
+        const cardBody = document.createElement('div');
+        cardBody.className = 'card-body';
+
+        const orderId = document.createElement('h5');
+        orderId.className = 'card-title';
+        orderId.textContent = `Order ID: ${order.id}`;
+
+        const orderTotal = document.createElement('p');
+        orderTotal.className = 'card-text';
+        orderTotal.textContent = `Total: R${order.total}`;
+
+        const orderCustomer = document.createElement('p');
+        orderCustomer.className = 'card-text';
+        orderCustomer.textContent = `Customer ID: ${order.customer}`;
+
+        const orderTimestamp = document.createElement('p');
+        orderTimestamp.className = 'card-text';
+        orderTimestamp.textContent = `Created At: ${new Date(order.created_at).toLocaleString()}`;
+
+        const itemList = document.createElement('ul');
+        itemList.className = 'list-group list-group-flush';
+
+        order.items.forEach(item => {
+            const itemElement = document.createElement('li');
+            itemElement.className = 'list-group-item';
+            itemElement.innerHTML = `
+                <strong>Product ID:</strong> ${item.product}<br>
+                <strong>Quantity:</strong> ${item.quantity}<br>
+                <strong>Price:</strong> R${item.price}
+            `;
+            itemList.appendChild(itemElement);
+        });
+
+        cardBody.appendChild(orderId);
+        cardBody.appendChild(orderTotal);
+        cardBody.appendChild(orderCustomer);
+        cardBody.appendChild(orderTimestamp);
+        card.appendChild(cardBody);
+        card.appendChild(itemList);
+
+        ordersSection.appendChild(card);
+    });
 }
+
 
 async function fetchAndDisplayProducts() {
     console.log('Fetching products...'); // Log to check if function is triggered
