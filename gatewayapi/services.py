@@ -86,7 +86,7 @@ def get_avatar_slot():
         'Authorization': f'Bearer {settings.AYOBA_API_KEY}',
     }
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers) 
         response.raise_for_status()
     except requests.exceptions.HTTPError as http_err:
         return {"error": f"HTTP error occurred: {http_err}"}

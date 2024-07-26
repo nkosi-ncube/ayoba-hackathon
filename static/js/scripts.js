@@ -251,7 +251,7 @@ async function fetchAndDisplayProducts() {
         listItem.className = 'list-group-item';
         listItem.innerHTML = `
             <div class="product-item">
-                <img src="${product.image_url}" alt="${product.name}" class="product-image">
+                <img  src="${product.image_url}" alt="${product.name}" class="product-image">
                 <div class="product-details">
                     <h5>${product.name}</h5>
                     <p>Price: R${product.price}</p>

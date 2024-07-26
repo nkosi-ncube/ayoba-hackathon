@@ -5,7 +5,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import QuerySerializer
 from .utils import generate_normal_response
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 class QueryAPIView(APIView):
     def post(self, request):
         serializer = QuerySerializer(data=request.data)
