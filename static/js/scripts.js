@@ -130,20 +130,42 @@ async function sendMessage(event) {
     const chatBox = document.querySelector('#chat-box');
     chatBox.innerHTML += `<div class="chat-message user">${message}</div>`;
     document.querySelector('#chat-message').value = '';
-    // Simulate bot response
-    response_message = await handleGetRequest('messages/');
-    console.log("Response message", response_message);
+    
+    try {
+        const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/messages/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                msisdns: ["+27648917936"], // Ensure this is properly formatted
+                message_type: 'text',
+                message_text: message
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log("Response", result);
 
-    if (response_message.length > 0) {
-        response_message = response_message[response_message.length-1].message
-    }else{
-        response_message = "Customer has not responded yet."
+        // Handle the response
+        let response_message = result;
+        if (response_message.length > 0) {
+            response_message = response_message[response_message.length - 1].message.text;
+        } else {
+            response_message = "Customer has not responded yet.";
+        }
+
+        setTimeout(() => {
+            chatBox.innerHTML += `<div class="chat-message bot">${response_message}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, 2000);
+    } catch (error) {
+        console.error("Error", error);
     }
-    // response_message = "this is a palceholder response from the business"
-    setTimeout(() => {
-        chatBox.innerHTML += `<div class="chat-message bot">${response_message}</div>`;
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }, 2000);
 }
 
 async function fetchMessages(){
