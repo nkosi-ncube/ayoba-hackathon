@@ -25,10 +25,14 @@ def send_message(msisdns, message_type, message_text):
         return {"error": f"Other error occurred: {err}"}
     return response.json()
 
+import requests
+from myapp.models import Message  # Import the Message model from your app
+from django.conf import settings  # Make sure to import settings if needed
+
 def get_message(msisdns, message_type, message_text):
     url = f"{AYOBA_API_URL}/v1/business/message"
     headers = {
-        'Authorization': f'Bearer {access_token}',
+        'Authorization': f'Bearer {access_token}',  # Ensure you have ACCESS_TOKEN in your settings
         'Content-Type': 'application/json',
     }
     payload = {
@@ -45,7 +49,31 @@ def get_message(msisdns, message_type, message_text):
         return {"error": f"HTTP error occurred: {http_err}"}
     except Exception as err:
         return {"error": f"Other error occurred: {err}"}
-    return response.json()
+    
+    response_data = response.json()
+
+    if response_data:
+        for message_data in response_data:
+            msisdn = message_data.get('msisdn')
+            message_id = message_data['messageId']
+            message_info = message_data.get('message', {})
+            from_jid = message_info.get('fromJid', '')
+            message_type = message_info.get('type', '')
+            text = message_info.get('text', '')
+            url = message_info.get('url', '')
+
+            message = Message(
+                msisdn=msisdn,
+                message_id=message_id,
+                from_jid=from_jid,
+                message_type=message_type,
+                text=text,
+                url=url,
+            )
+            message.save()
+    
+    return response_data
+
 
 def send_file_message(msisdns, file_url):
     url = f"{AYOBA_API_URL}/v1/business/message/file"

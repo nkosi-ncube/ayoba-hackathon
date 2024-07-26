@@ -6,12 +6,16 @@ from django.urls import reverse
 
 
 class Message(models.Model):
-    msisdn = models.CharField(max_length=20)  # Phone number of the sender
-     # Unique ID for the message
-    message_type = models.CharField(max_length=50)  # Type of the message (e.g., text, image)
-    text = models.TextField(blank=True, null=True)  # Text of the message
-    # media_url = models.URLField(blank=True, null=True)  # URL for media if applicable
-    timestamp = models.DateTimeField(auto_now_add=True)  # When the message was sent
+    msisdn = models.CharField(max_length=15)  # Phone number
+    message_id = models.CharField(max_length=100)  # Unique message ID
+    from_jid = models.CharField(max_length=100)  # From JID
+    message_type = models.CharField(max_length=50)  # Type of message
+    text = models.TextField(null=True, blank=True)  # Text of the message
+    url = models.URLField(null=True, blank=True)  # URL of the media (if any)
+    timestamp = models.DateTimeField(auto_now_add=True)  # Time the message was saved
+
+    def __str__(self):
+        return f"{self.msisdn} - {self.message_id}"# When the message was sent
 
     def __str__(self):
         return f"Message from {self.msisdn} at {self.timestamp}"

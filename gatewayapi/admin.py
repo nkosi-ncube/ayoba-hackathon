@@ -7,9 +7,11 @@ from django.utils.html import format_html
 
 
 @admin.register(Message)
-class MessageAdmin(admin.ModelAdmin):   
-    list_display = ('id', 'text','message_type','msisdn','timestamp')
-
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'msisdn', 'message_id', 'from_jid', 'message_type', 'text', 'url', 'timestamp')
+    search_fields = ('msisdn', 'message_id', 'from_jid', 'message_type')
+    list_filter = ('message_type', 'timestamp')
+    ordering = ('-timestamp',)
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'order', 'status', 'get_payment_status')
