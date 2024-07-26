@@ -13,6 +13,7 @@ class AyobaTokenManager:
     def refresh_token(self):
         def login_to_ayoba():
             url = "https://api.ayoba.me/v2/login"
+            print(self.username , self.password)
             payload = {
                 "username": self.username,
                 "password": self.password
