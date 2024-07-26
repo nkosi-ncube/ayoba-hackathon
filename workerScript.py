@@ -2,6 +2,9 @@
 from gatewayapi.tokenManager import token_manager
 import requests
 
+from gatewayapi.tokenManager import token_manager
+import requests
+
 def make_authenticated_request(url, data=None):
     token = token_manager.get_token()
     headers = {
@@ -21,8 +24,10 @@ def make_authenticated_request(url, data=None):
 
 # Example usage of the authenticated request
 if __name__ == "__main__":
+    print("Workser script  is running")
     url = "https://api.ayoba.me/v1/business/avatar/get-slot"
     data = {  "fileName": "awesome-selfy.jpeg"}
 
     response = make_authenticated_request(url, data)
+
     print(response)
