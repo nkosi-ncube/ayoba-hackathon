@@ -143,9 +143,21 @@ async function sendMessage(event) {
     setTimeout(() => {
         chatBox.innerHTML += `<div class="chat-message bot">${response_message}</div>`;
         chatBox.scrollTop = chatBox.scrollHeight;
-    }, 1000);
+    }, 2000);
 }
 
+async function fetchMessages(){
+    const response = await fetch('https://api.ayoba.me/v1/business/message');
+    const result = await response.json();
+
+    if (result.length > 0) {
+        const messages = result;
+        console.log("Messages", messages);
+        return messages[-1].message;
+    } else {
+        return "No messages found";
+    }
+}
 async function toggleSettings() {
     const settingsPanel = document.querySelector('#settings-panel');
     settingsPanel.classList.toggle('active');
