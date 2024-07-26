@@ -85,12 +85,12 @@ class MessageViewSet(viewsets.ModelViewSet):
             response = send_message(msisdns, message_type, message_text)
             print("This is the response that came through: " ,response)
 
-            time.sleep(5)
-            response = get_message(msisdns, message_type, message_text)
-            if len(response) > 0:
-                response = response[-1]["message"]["text"]
-            else:
-                response = "No message received"
+            # time.sleep(5)
+            # response = get_message(msisdns, message_type, message_text)
+            # if len(response) > 0:
+            #     response = response[-1]["message"]["text"]
+            # else:
+            #     response = "No message received"
         elif message_type == 'file':
             file_url = request.data.get('file_url', '')
             response = send_file_message(msisdns, file_url)
