@@ -47,7 +47,7 @@ async function broadcastMessage() {
     }
 
     try {
-        const customers = await fetchCustomers();
+        const customers = ["+27648917936"];
         if (customers.length === 0) {
             document.getElementById('broadcast-result').innerText = 'No customers found!';
             return;
@@ -68,7 +68,7 @@ async function broadcastMessage() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        document.getElementById('broadcast-result').innerText = 'Message sent successfully!';
+        document.getElementById('broadcast-result').innerText = 'Survey BroadCast Sent Successfully!';
     } catch (error) {
         document.getElementById('broadcast-result').innerText = `Error: ${error.message}`;
     }
