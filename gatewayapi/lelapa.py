@@ -30,3 +30,4 @@ def translate_text(text,choice ):
 
 if __name__ == "__main__":
     print(translate_text("""Dont worry about the female voice its my robot that knows how to change english to sesotho.Is the Sotho good""", "sot_Latn"))
+    print("done")
