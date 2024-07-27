@@ -1,6 +1,7 @@
 import os
 from retry_requests import retry
 from requests import Session
+import requests
 
 def translate_text(text, choice):
     TRANSLATION_URL = "https://vulavula-services.lelapa.ai/api/v1/translate/process"
