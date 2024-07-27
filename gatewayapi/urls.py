@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     ProductViewSet, CustomerViewSet, OrderViewSet, InvoiceViewSet, PaymentViewSet, 
     QueryViewSet, AdminViewSet, OrderItemViewSet, BusinessProfileViewSet, 
-    catalog_list, add_to_cart, checkout, home, MessageViewSet,TestingViewSet
+    catalog_list, add_to_cart, checkout, home, MessageViewSet,TestingViewSet,translate_view
 )
 
 
@@ -23,7 +23,8 @@ router.register(r'messages', MessageViewSet)
 # router.register(r'messages', TestingViewSet)
 
 urlpatterns = [
-    path('', home, name='home'),  # Home view should come first
+    path('', home, name='home'),
+    path('api/translate/', translate_view, name='translate_view'), # Home view should come first
     path('catalog/', catalog_list, name='catalog-list'),  # Function-based view for catalog
     path('cart/', add_to_cart, name='add-to-cart'),  # Function-based view for adding items to the cart
     path('checkout/', checkout, name='checkout'),  # Function-based view for checkout

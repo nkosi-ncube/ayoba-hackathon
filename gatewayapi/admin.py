@@ -29,8 +29,8 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'language')
-    search_fields = ('name',)
+    list_display = ('name', 'language')  # Display name and language in the list view
+    search_fields = ('name',)  
 
 @admin.register(Testing)
 class TestingAdmin(admin.ModelAdmin):

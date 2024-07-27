@@ -120,7 +120,30 @@ class MessageViewSet(viewsets.ModelViewSet):
         except Exception as err:
             print("Other error:", err)
             return Response({"error": f"Other error occurred: {err}"}, status=status.HTTP_400_BAD_REQUEST)
+import json
+from django.http import JsonResponse
+from .lelapa import translate_text
+@csrf_exempt
+def translate_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            text = data.get('text')
+            choice = data.get('choice')
 
+            if not text or not choice:
+                return JsonResponse({"error": "Both 'text' and 'choice' are required."}, status=400)
+
+            translated_text = translate_text(text, choice)
+            return JsonResponse({"translated_text": translated_text})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format."}, status=400)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Only POST method is allowed."}, status=405)
 # Class-based views
 class BusinessProfileViewSet(viewsets.ModelViewSet):
     queryset = BusinessProfile.objects.all()

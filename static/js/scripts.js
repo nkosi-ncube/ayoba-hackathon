@@ -41,6 +41,10 @@ async function fetchCustomers() {
 
 async function broadcastMessage() {
     const message = document.getElementById('message').value;
+    let customer_response = fetchCustomers();
+    let customer_language = customer_response[0].language;
+
+    message = await translateForUser(message, customer_language);
     if (!message) {
         document.getElementById('broadcast-result').innerText = 'Message cannot be empty!';
         return;
@@ -75,6 +79,54 @@ async function broadcastMessage() {
     }
 }
 
+async function translateForUser(text, choice) {
+    // Validate the input
+    if (!text || !choice) {
+        console.error("Text and language choice are required.");
+        return;
+    }
+
+    // Define the endpoint URL (update with your actual endpoint if necessary)
+    const endpoint = 'https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/translate/';
+
+    // Create the payload
+    const payload = {
+        text: text,
+        choice: choice
+    };
+
+    try {
+        // Send the POST request to the translation endpoint
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        // Check if the response is ok
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // Parse the JSON response
+        const result = await response.json();
+
+        // Display or return the translated text
+        console.log("Translated Text:", result.translated_text);
+        return result.translated_text;
+
+    } catch (error) {
+        // Handle any errors
+        console.error("Error translating text:", error);
+        return "Error translating text.";
+    }
+}
+
+
+
+
 async function handleGetRequest(endpoint) {
     try {
         const response = await fetch(`https://gatewayapi-e65e2b5c01f7.herokuapp.com/api/${endpoint}`);
@@ -101,6 +153,9 @@ function handleFormSubmit(event, endpoint) {
 async function sendQueryToAI() {
     const query = document.getElementById('query').value;
     try {
+
+        let customer_response = fetchCustomers();
+        let customer_language = customer_response[0].language;
         const response = await fetch('https://gatewayapi-e65e2b5c01f7.herokuapp.com/customer-assistance/queries/', {
             method: 'POST',
             headers: {
@@ -109,10 +164,12 @@ async function sendQueryToAI() {
             body: JSON.stringify({ query: query })
         });
         const result = await response.json();
+        const translated = await translateForUser(result.response, customer_language);
+
         // document.getElementById('ai-response').innerText = JSON.stringify(result, null, 2);
         const chatBox = document.querySelector('#query-box');
         chatBox.innerHTML += `<div class="chat-message user">${query}</div>`;
-        chatBox.innerHTML += `<div class="chat-message bot">${result.response}</div>`;
+        chatBox.innerHTML += `<div class="chat-message bot">${translated}</div>`;
         chatBox.scrollTop = chatBox.scrollHeight;
     } catch (error) {
         document.getElementById('ai-response').innerText = `Error: ${error.message}`;

@@ -12,47 +12,6 @@ def translate_text(text,choice ):
     # Get retry helper session
     session = retry(Session(), retries=10, backoff_factor=1)
 
-    # print("""
-    # Languages and their shorthands:
-    # Northern Sotho (nso_Latn)
-    # Afrikaans (afr_Latn)
-    # Southern Sotho (sot_Latn)
-    # Swati (ssw_Latn)
-    # Tsonga (tso_Latn)
-    # Tswana (tsn_Latn)
-    # Xhosa (xho_Latn)
-    # Zulu (zul_Latn)
-    # English (eng_Latn)
-    # Swahili (swh_Latn)
-
-    # """)
-    # languages = [
-    #     "nso_Latn",
-    #     "afr_Latn",
-    #     "sot_Latn",
-    #     "ssw_Latn",
-    #     "tso_Latn",
-    #     "tsn_Latn",
-    #     "xho_Latn",
-    #     "zul_Latn",
-    #     "eng_Latn",
-    #     "swh_Latn"
-    # ]
-
-    user_choice = int(input("""Choose a number for the source language: 
-        "0 nso_Latn",
-        "1 afr_Latn",
-        "2 sot_Latn",
-        "3 ssw_Latn",
-        "4 tso_Latn",
-        "5 tsn_Latn",
-        "6 xho_Latn",
-        "7 zul_Latn",
-        "8 eng_Latn",
-        "9 swh_Latn"
-    ]
-    """))
-
     payload = {
     "input_text": text,
     "source_lang": "eng_Latn",

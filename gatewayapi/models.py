@@ -41,8 +41,27 @@ class Product(models.Model):
     
 
 class Customer(models.Model):
+    # Define the language choices
+    LANGUAGE_CHOICES = [
+        ("nso_Latn", "Northern Sotho"),
+        ("afr_Latn", "Afrikaans"),
+        ("sot_Latn", "Southern Sotho"),
+        ("ssw_Latn", "Swati"),
+        ("tso_Latn", "Tsonga"),
+        ("tsn_Latn", "Setswana"),
+        ("xho_Latn", "Xhosa"),
+        ("zul_Latn", "Zulu"),
+        ("eng_Latn", "English"),
+        ("swh_Latn", "Swahili"),
+    ]
+
+    # Define the fields for the Customer model
     name = models.CharField(max_length=255)
-    language = models.CharField(max_length=255)
+    language = models.CharField(max_length=10, choices=LANGUAGE_CHOICES, default="eng_Latn")
+    msisdns = models.JSONField(default=list)  # Assuming msisdns will be a list of phone numbers
+
+    def __str__(self):
+        return self.name
 
     def __str__(self):
         return self.name
