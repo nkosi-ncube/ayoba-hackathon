@@ -61,7 +61,7 @@ async function broadcastMessage() {
             body: JSON.stringify({
                 msisdns: customers, // Ensure this is properly formatted
                 message_type: 'text',
-                message_text: message
+                message_text: message + "https://app.formbricks.com/s/clwf7snpy09mivazmtqwklvw0"
             }),
         });
 
