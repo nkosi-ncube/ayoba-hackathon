@@ -59,8 +59,9 @@ async function broadcastMessage() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                message: message,
-                phoneNumbers: customers,
+                msisdns: customers, // Ensure this is properly formatted
+                message_type: 'text',
+                message_text: message
             }),
         });
 
